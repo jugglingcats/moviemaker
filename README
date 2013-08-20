@@ -1,1 +1,27 @@
-This file was created by IntelliJ IDEA 12.1.4 for binding GitHub repository
+Stories
+
+- Create video
+  - Add frame
+  - Upload frame
+  - Preview --> View video
+  
+- View video
+
+- Generate video
+
+- Register
+
+- Download video (user can then share elsewhere)
+
+- List my videos
+
+- Delete video
+
+- Upload to YouTube
+
+- Upload to Google Drive
+
+- Upload to Dropbox
+
+- Upload to outlook.com
+
