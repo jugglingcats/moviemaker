@@ -1,12 +1,27 @@
 Stories
 
-- Upload JPG frame
+- Create video
+  - Add frame
+  - Upload frame
+  - Preview --> View video
+  
+- View video
 
-- Store frame on disk
-
-- Download movie
+- Generate video
 
 - Register
 
-- Save / publish movie
+- Download video (user can then share elsewhere)
+
+- List my videos
+
+- Delete video
+
+- Upload to YouTube
+
+- Upload to Google Drive
+
+- Upload to Dropbox
+
+- Upload to outlook.com
 
