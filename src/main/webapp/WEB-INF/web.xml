@@ -12,11 +12,20 @@
         </listener-class>
     </listener>
     <servlet>
+        <!-- Override init parameter to avoid nasty -->
+        <!-- file locking issue on windows.         -->
+        <servlet-name>default</servlet-name>
+        <init-param>
+            <param-name>useFileMappedBuffer</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </servlet>
+    <servlet>
         <servlet-name>Jersey Web Application</servlet-name>
         <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>com.akirkpatrick.classifieds.resources</param-value>
+            <param-value>com.akirkpatrick.classifieds.resources;com.akirkpatrick.mm</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
