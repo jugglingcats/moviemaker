@@ -1,7 +1,16 @@
 html {
     background: #111111;
-    height: 100%;
-    background: linear-gradient(#333, #000);
+}
+
+#timeline {
+    zoom: 0.15;
+}
+
+#timeline li {
+    display: inline;
+}
+
+#timeline li img {
 }
 
 canvas {
@@ -9,18 +18,12 @@ canvas {
 }
 
 video, img, #startbutton {
-    display: block;
-    float: left;
-    border: 10px solid #fff;
-    border-radius: 10px;
-}
-
-#movie {
-    clear: both;
+    border: 2px solid #333333;
+    border-radius: 2px;
 }
 
 #photo {
-    width: 200px;
+    width: 2000px;
     height: 150px;
     background: 3 solid red;
 }
@@ -34,8 +37,8 @@ video, img, #startbutton {
     font-size: 20px;
 }
 
-#container {
-    overflow: hidden;
-    width: 880px;
-    margin: 20px auto;
-}
+/*#container {*/
+    /*overflow: hidden;*/
+    /*width: 880px;*/
+    /*margin: 20px auto;*/
+/*}*/

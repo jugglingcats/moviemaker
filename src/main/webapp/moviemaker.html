@@ -4,20 +4,25 @@
     <title></title>
     <link rel="stylesheet" type="text/css" href="css/moviemaker.css"/>
 </head>
-<body ng-controller="MovieMakerCtrl">
+<body ng-controller="MovieMakerCtrl" ng-keydown="keydown($event)">
 
 <video id="video"></video>
 <button id="startbutton" ng-click="snap()">Take photo</button>
 <canvas id="canvas"></canvas>
-<!--<input id="inputImage" type="file" accept="image/*" image="image" style="display:none"/>-->
-<img src="http://placekitten.com/g/300/225" id="photo" alt="photo">
+
+<ul id="timeline">
+    <li ng-repeat="snap in snaps">
+        <img class="thumbnail" ng-src="{{snap}}"/>
+    </li>
+</ul>
+
 <img src="http://placekitten.com/g/300/225" id="movie" alt="movie">
+
 <button id="incrbutton">Increment</button>
 <button type="submit" ng-click="single(image)">Upload</button>
 
 <script src="js/angular.min.js" type="text/javascript"></script>
 <script src="js/moviemaker.js" type="text/javascript"></script>
-<!--<script src="js/imageupload.js" type="text/javascript"></script>-->
 
 </body>
 </html>

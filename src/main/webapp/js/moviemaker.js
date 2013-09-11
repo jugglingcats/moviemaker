@@ -1,4 +1,6 @@
-angular.module('moviemaker', ['imageupload'])
+// TODO: if two images are identical an error is thrown
+
+angular.module('moviemaker', [])
     .controller('MovieMakerCtrl', function ($scope, $http) {
         var streaming = false,
             video = document.querySelector('#video'),
@@ -8,7 +10,7 @@ angular.module('moviemaker', ['imageupload'])
             movie = document.querySelector('#movie'),
             startbutton = document.querySelector('#startbutton'),
             incrbutton = document.querySelector('#incrbutton'),
-            width = 200,
+            width = 640,
             height = 0;
 
         var snaps = [];
@@ -42,6 +44,7 @@ angular.module('moviemaker', ['imageupload'])
         video.addEventListener('canplay', function (ev) {
             if (!streaming) {
                 height = video.videoHeight / (video.videoWidth / width);
+                console.log("height of video is: "+height);
                 video.setAttribute('width', width);
                 video.setAttribute('height', height);
                 canvas.setAttribute('width', width);
@@ -56,21 +59,29 @@ angular.module('moviemaker', ['imageupload'])
             canvas.getContext('2d').drawImage(video, 0, 0, width, height);
             var data = canvas.toDataURL('image/jpeg');
             snaps.push(data);
-            photo.setAttribute('src', data);
+            post(snaps[snaps.length-1]);
+//            photo.setAttribute('src', data);
         }
 
-        $scope.single = function (image) {
+        $scope.keydown = function($event) {
+            if ( $event.keyCode == 32 ) {
+                $scope.snap();
+                $event.stopPropagation();
+                $event.preventDefault();
+            }
+        }
+
+        $scope.snaps = snaps;
+
+        post = function (data) {
             var header="data:image/jpeg;base64";
-            var data=snaps[0];
+//            var data=snaps[0];
             if ( data.indexOf(header) != 0 ) {
                 throw "expected '"+header+"' at start of data";
             }
             var base64data=data.substr(header.length+1);
 
             console.log("posting data... " + base64data);
-
-//            var formData = new FormData();
-//            formData.append('image', image);
 
             $http.post('/rest/upload/single', base64data, {
                 headers: { 'Content-Type': "text/plain" },
