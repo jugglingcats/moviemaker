@@ -39,7 +39,7 @@ public class ApplicationConfig {
         vendorAdapter.setShowSql(Boolean.TRUE);
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("com.akirkpatrick.classifieds.model");
+        factory.setPackagesToScan("com.akirkpatrick.mm.model");
         factory.setDataSource(dataSource());
         factory.afterPropertiesSet();
         factory.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());

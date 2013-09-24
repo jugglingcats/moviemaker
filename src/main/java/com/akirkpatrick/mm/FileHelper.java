@@ -8,15 +8,28 @@ import java.util.Vector;
 
 public class FileHelper {
 
-    public static File fromUUID(UUID uuid) {
-        return new File("tmp/"+uuid.toString()+".jpg");
+    public static File toFile(UUID uuid) {
+        return toFile(uuid.toString());
     }
 
-    public static List<String> toStrings(List<UUID> frames) {
+    public static File toFile(String id) {
+        return new File(toPath(id));
+    }
+
+    private static String toPath(String id) {
+        return "tmp/" + id + ".jpg";
+    }
+
+    public static List<String> toPaths(List<UUID> frames) {
         List<String> retval=new ArrayList<String>();
         for ( UUID uuid : frames ) {
-            retval.add(uuid.toString());
+            retval.add(toPath(uuid.toString()));
         }
         return retval;
     }
+
+    public static String toImageDownloadUrl(UUID uuid) {
+        return "/rest/mm/image/"+uuid.toString();
+    }
+
 }

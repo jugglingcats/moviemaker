@@ -1,4 +1,4 @@
-package com.akirkpatrick.mm;
+package com.akirkpatrick.mm.web;
 
 import java.util.ArrayList;
 import java.util.UUID;

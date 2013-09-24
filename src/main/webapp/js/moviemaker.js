@@ -4,23 +4,29 @@ angular.module('moviemaker', [])
     .controller('MovieMakerCtrl', function ($scope, $http) {
         var streaming = false,
             video = document.querySelector('#video'),
-            cover = document.querySelector('#cover'),
+            preview = _V_('preview-player'),
+//            cover = document.querySelector('#cover'),
             canvas = document.querySelector('#canvas'),
-            photo = document.querySelector('#photo'),
-            movie = document.querySelector('#movie'),
-            startbutton = document.querySelector('#startbutton'),
-            incrbutton = document.querySelector('#incrbutton'),
+//            photo = document.querySelector('#photo'),
+//            movie = document.querySelector('#movie'),
+//            startbutton = document.querySelector('#startbutton'),
+//            incrbutton = document.querySelector('#incrbutton'),
             width = 640,
             height = 0;
 
         var snaps = [];
         var index = 0;
         var interval = 200;
+        $scope.mode = 'grid';
 
         navigator.getMedia = ( navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia ||
             navigator.msGetUserMedia);
+
+//        preview.addEvent("error", function() {
+//            $scope.errorMessage="There was a video error";
+//        });
 
         navigator.getMedia(
             {
@@ -44,7 +50,7 @@ angular.module('moviemaker', [])
         video.addEventListener('canplay', function (ev) {
             if (!streaming) {
                 height = video.videoHeight / (video.videoWidth / width);
-                console.log("height of video is: "+height);
+                console.log("height of video is: " + height);
                 video.setAttribute('width', width);
                 video.setAttribute('height', height);
                 canvas.setAttribute('width', width);
@@ -53,18 +59,21 @@ angular.module('moviemaker', [])
             }
         }, false);
 
+        $scope.toggleOnion = function() {
+            $scope.onionEnabled=!$scope.onionEnabled;
+        }
+
         $scope.snap = function () {
             canvas.width = width;
             canvas.height = height;
             canvas.getContext('2d').drawImage(video, 0, 0, width, height);
             var data = canvas.toDataURL('image/jpeg');
-            snaps.push(data);
-            post(snaps[snaps.length-1]);
+            post(data);
 //            photo.setAttribute('src', data);
         }
 
-        $scope.keydown = function($event) {
-            if ( $event.keyCode == 32 ) {
+        $scope.keydown = function ($event) {
+            if ($event.keyCode == 32) {
                 $scope.snap();
                 $event.stopPropagation();
                 $event.preventDefault();
@@ -72,26 +81,29 @@ angular.module('moviemaker', [])
         }
 
         $scope.snaps = snaps;
+        $scope.onionEnabled = true;
 
-        post = function (data) {
-            var header="data:image/jpeg;base64";
+        var post = function (data) {
+            var header = "data:image/jpeg;base64";
 //            var data=snaps[0];
-            if ( data.indexOf(header) != 0 ) {
-                throw "expected '"+header+"' at start of data";
+            if (data.indexOf(header) != 0) {
+                throw "expected '" + header + "' at start of data";
             }
-            var base64data=data.substr(header.length+1);
+            var base64data = data.substr(header.length + 1);
 
-            console.log("posting data... " + base64data);
-
-            $http.post('/rest/upload/single', base64data, {
+            $http.post('/rest/mm/post', base64data, {
                 headers: { 'Content-Type': "text/plain" },
                 transformRequest: angular.identity
             }).success(function (result) {
-                    $scope.uploadedImgSrc = result.src;
-                    $scope.sizeInBytes = result.size;
+                    console.log("posted! "+result);
+                    snaps.push(result);
+//                    $scope.uploadedImgSrc = result.src;
+//                    $scope.sizeInBytes = result.size;
+                }).error(function (result) {
+                    console.log("error with post!");
+                    $scope.errorMessage=result;
                 });
 
-            console.log("posted!");
         };
     });
 

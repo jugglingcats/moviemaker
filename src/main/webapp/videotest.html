@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Player Test</title>
+
+</head>
+<body>
+<!--<video id="vidsrc" src="misc/test.mov" controls width="640" height="480">-->
+<!--&lt;!&ndash;<source src="misc/test.mov" type="video/mp4"/>&ndash;&gt;-->
+<!--The video failed to load.-->
+<!--</video>-->
+
+<div>
+    <EMBED
+            SRC="misc/test.mov"
+            WIDTH="640" HEIGHT="480"
+            AUTOPLAY="false"
+            TYPE="video/quicktime"
+            PLUGINSPAGE="http://www.apple.com/quicktime/download/"
+            />
+</div>
+
+<script>
+    function oops(e) {
+        console.log(e);
+        // video playback failed - show a message saying why
+        switch (e.target.error.code) {
+            case e.target.error.MEDIA_ERR_ABORTED:
+                alert('You aborted the video playback.');
+                break;
+            case e.target.error.MEDIA_ERR_NETWORK:
+                alert('A network error caused the video download to fail part-way.');
+                break;
+            case e.target.error.MEDIA_ERR_DECODE:
+                alert('The video playback was aborted due to a corruption problem or because the video used features your browser did not support.');
+                break;
+            case e.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                alert('The video could not be loaded, either because the server or network failed or because the format is not supported.');
+                break;
+            default:
+                alert('An unknown error occurred.');
+                break;
+        }
+    }
+    document.getElementById('vidsrc').addEventListener('error', oops);
+</script>
+</body>
+</html>

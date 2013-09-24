@@ -1,44 +1,45 @@
-html {
+html, body {
     background: #111111;
 }
 
 #timeline {
-    zoom: 0.15;
+    zoom: 0.20;
 }
 
 #timeline li {
     display: inline;
 }
 
-#timeline li img {
+#timeline img {
+    display: inline;
 }
 
-canvas {
-    display: none;
+#video {
+    position: relative;
+    left: 0px;
+    top: 0px;
 }
 
-video, img, #startbutton {
-    border: 2px solid #333333;
-    border-radius: 2px;
+#canvas {
+    position: fixed;
+    left: 15px;
+    top: 0px;
+    opacity: 0.5;
+    /*display: none;*/
 }
 
-#photo {
-    width: 2000px;
-    height: 150px;
-    background: 3 solid red;
+.thumb {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    border: 0 solid black;
 }
 
-#startbutton {
-    background: green;
-    border: none;
-    color: #fff;
-    margin: 100px 20px 20px 20px;
-    padding: 10px 20px;
-    font-size: 20px;
+.container {
+    max-width: 3000px;
 }
 
-/*#container {*/
-    /*overflow: hidden;*/
-    /*width: 880px;*/
-    /*margin: 20px auto;*/
-/*}*/
+#timeline-div {
+    max-height: 480px;
+    overflow-y: auto;
+    padding: 0 0 0 0;
+}

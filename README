@@ -1,17 +1,17 @@
 Stories
 
 - Create video
-  - Add frame
-  - Upload frame
+  * Add frame
+  * Upload frame
   - Preview --> View video
   
 - View video
 
-- Generate video
+* Generate video
 
 - Register
 
-- Download video (user can then share elsewhere)
+* Download video (user can then share elsewhere)
 
 - List my videos
 
@@ -24,4 +24,16 @@ Stories
 - Upload to Dropbox
 
 - Upload to outlook.com
+
+Interesting glyph icons
+- camera
+- eye-close and eye-open
+- download or download-alt
+- facetime-video
+- film
+- hand-up (for scrubber of film)
+- trash or remove (delete)
+- th (back to thumbnail view)
+- zoom-in and zoom-out
+
 

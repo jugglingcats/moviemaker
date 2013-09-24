@@ -1,4 +1,4 @@
-package com.akirkpatrick.mm;
+package com.akirkpatrick.mm.generator;
 
 import javax.media.MediaLocator;
 import javax.media.Time;

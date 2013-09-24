@@ -1,4 +1,4 @@
-package com.akirkpatrick.mm;
+package com.akirkpatrick.mm.generator;
 
 import org.springframework.util.FileSystemUtils;
 

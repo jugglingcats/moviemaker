@@ -2,25 +2,62 @@
 <html ng-app="moviemaker">
 <head>
     <title></title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="css/moviemaker.css"/>
+    <link rel="stylesheet" type="text/css" href="video/video-js.min.css"/>
 </head>
 <body ng-controller="MovieMakerCtrl" ng-keydown="keydown($event)">
 
-<video id="video"></video>
-<button id="startbutton" ng-click="snap()">Take photo</button>
-<canvas id="canvas"></canvas>
+<div class="alert-warning">{{errorMessage}}</div>
 
-<ul id="timeline">
-    <li ng-repeat="snap in snaps">
-        <img class="thumbnail" ng-src="{{snap}}"/>
-    </li>
-</ul>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <video id="video"></video>
+            <canvas ng-show="onionEnabled" id="canvas"></canvas>
+        </div>
+        <div id="timeline-div" class="col-md-6">
+            <video id="preview-player" ng-show="mode == 'video'" class="video-js vjs-default-skin" controls loop preload="none"
+                   width="640" height="480" data-setup="{}">
+                <source src="/rest/mm/download" type='video/mp4' />
+            </video>
+            <ul id="timeline" ng-show="mode == 'grid'">
+                <li ng-repeat="snap in snaps">
+                    <img class="thumb" ng-src="{{snap}}"/>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <button type="button" class="btn btn-primary" ng-click="snap()" title="Take Picture">
+                <span class="glyphicon glyphicon-camera"></span>
+            </button>
+            <button type="button" class="btn btn-primary" ng-show="onionEnabled" ng-click="toggleOnion()" title="Onion Skinning Off">
+                <span class="glyphicon glyphicon-eye-close"></span>
+            </button>
+            <button type="button" class="btn btn-primary" ng-hide="onionEnabled" ng-click="toggleOnion()" title="Onion Skinning On">
+                <span class="glyphicon glyphicon-eye-open"></span>
+            </button>
+            <a class="btn btn-primary" href="/rest/mm/download" title="Download Video">
+                <span class="glyphicon glyphicon-download"></span>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <button type="button" class="btn btn-primary" ng-click="mode='grid'" title="Show Grid">
+                <span class="glyphicon glyphicon-th"></span>
+            </button>
+            <button type="button" class="btn btn-primary" ng-click="mode='video'" title="Show Grid">
+                <span class="glyphicon glyphicon-facetime-video"></span>
+            </button>
+        </div>
+    </div>
+</div>
 
-<img src="http://placekitten.com/g/300/225" id="movie" alt="movie">
+<p>
+</p>
 
-<button id="incrbutton">Increment</button>
-<button type="submit" ng-click="single(image)">Upload</button>
-
+<script src="video/video.js" type="text/javascript"></script>
 <script src="js/angular.min.js" type="text/javascript"></script>
 <script src="js/moviemaker.js" type="text/javascript"></script>
 

@@ -1,4 +1,6 @@
-package com.akirkpatrick.mm;
+package com.akirkpatrick.mm.generator;
+
+import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
 import javax.media.*;
@@ -14,7 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +26,7 @@ public class MovieGenerator implements ControllerListener, DataSinkListener {
     private Object sync = new Object();
     private boolean success;
     private Exception error;
+    private final MediaLocator mediaLocator = new MediaLocator("file:"+UUID.randomUUID().toString()+".mpg");
 
     public void create(List<String> frames, OutputStream output) {
 
@@ -33,7 +36,7 @@ public class MovieGenerator implements ControllerListener, DataSinkListener {
             int width = firstImage.getWidth();
             int height = firstImage.getHeight();
 
-            int framerate = 10;
+            int framerate = 7;
 
             ImageDataSource ids = new ImageDataSource(width, height, framerate, frames);
             processor = Manager.createProcessor(ids);
@@ -45,12 +48,14 @@ public class MovieGenerator implements ControllerListener, DataSinkListener {
             processor.stop();
             processor.close();
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (NoProcessorException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            if ( success ) {
+                File result=new File(mediaLocator.getURL().getPath());
+                FileUtils.copyFile(result, output);
+                result.delete();
+            }
+
+        } catch (Exception e) {
+            error=e;
         } finally {
             if ( !success ) {
                 if ( error != null ) {
@@ -101,7 +106,7 @@ public class MovieGenerator implements ControllerListener, DataSinkListener {
         DataSource dataSource = processor.getDataOutput();
         assert (dataSource != null);
         try {
-            DataSink dataSink = Manager.createDataSink(dataSource, new MediaLocator("file:out.mov"));
+            DataSink dataSink = Manager.createDataSink(dataSource, mediaLocator);
             dataSink.addDataSinkListener(this);
             dataSink.open();
 

@@ -1,6 +1,6 @@
 package com.akirkpatrick.mm;
 
-import com.sun.org.apache.bcel.internal.generic.ALOAD;
+import com.akirkpatrick.mm.generator.MovieGenerator;
 import org.junit.Test;
 
 import java.util.ArrayList;
