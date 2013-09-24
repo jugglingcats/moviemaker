@@ -15,7 +15,8 @@ public class Account {
 
     private String username;
     private String md5Password;
-    @OneToMany
+
+    @OneToMany(mappedBy="account")
     private List<Project> projects=new ArrayList<Project>();
 
     public void setUsername(String username) {

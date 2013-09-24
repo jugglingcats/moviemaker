@@ -11,6 +11,9 @@ public class Project {
     private Long id;
     private String name;
 
+    @ManyToOne
+    private Account account;
+
     @ElementCollection(targetClass=String.class)
     private List<String> frames=new ArrayList<String>();
 
