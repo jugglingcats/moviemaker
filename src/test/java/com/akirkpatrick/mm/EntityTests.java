@@ -14,16 +14,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-
-/**
- * Created with IntelliJ IDEA.
- * User: alfie
- * Date: 24/09/13
- * Time: 10:20
- * To change this template use File | Settings | File Templates.
- */
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -42,12 +35,11 @@ public class EntityTests extends Assert {
     @PersistenceContext
     private EntityManager em;
 
-    @Test
-    public void testContext() {
+    @Test(expected = NoResultException.class)
+    public void testEmptyDatabaseNoUsers() {
         assertNotNull(applicationContext);
         assertNotNull(mms);
         mms.authenticate("alfie", null);
-
     }
 
     @Test
@@ -56,6 +48,7 @@ public class EntityTests extends Assert {
     }
 
     @Test
+    @Transactional
     public void testCreateAccount() {
         mms.createAccount("alfie", "password");
         Account a=mms.authenticate("alfie", "password");
@@ -79,8 +72,8 @@ public class EntityTests extends Assert {
         assertEquals(1, frames.size());
     }
 
-    @Transactional
     @Test
+    @Transactional
     public void testCheckAccountExists() {
         Account a=mms.createAccount("alfie", "password");
 
