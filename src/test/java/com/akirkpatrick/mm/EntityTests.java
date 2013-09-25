@@ -78,4 +78,13 @@ public class EntityTests extends Assert {
         List<String> frames=projList.get(0).getFrames();
         assertEquals(1, frames.size());
     }
+
+    @Transactional
+    @Test
+    public void testCheckAccountExists() {
+        Account a=mms.createAccount("alfie", "password");
+
+        assertTrue(mms.isAccount("alfie"));
+        assertFalse(mms.isAccount("john"));
+    }
 }

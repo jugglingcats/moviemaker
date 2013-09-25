@@ -57,4 +57,10 @@ public class MovieMakerService {
         em.persist(project);
         return project;
     }
+
+    public boolean isAccount(String username) {
+        return em.createNamedQuery("Account.findByUsername")
+                .setParameter("username", username)
+                .getResultList().size() == 1;
+    }
 }
