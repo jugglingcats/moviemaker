@@ -1,6 +1,5 @@
 package com.akirkpatrick.mm;
 
-import com.akirkpatrick.classifieds.ApplicationConfig;
 import com.akirkpatrick.mm.model.Account;
 import com.akirkpatrick.mm.model.Project;
 import junit.framework.Assert;

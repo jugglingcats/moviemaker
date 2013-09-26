@@ -1,12 +1,15 @@
 package com.akirkpatrick.mm;
 
 import com.akirkpatrick.mm.generator.MovieGenerator;
+import com.akirkpatrick.mm.model.Account;
+import com.akirkpatrick.mm.rest.User;
 import com.akirkpatrick.mm.web.MovieMakerSession;
 import com.akirkpatrick.mm.web.SessionHelper;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -56,5 +59,28 @@ public class MovieMakerResource {
                 new MovieGenerator().create(FileHelper.toPaths(mms.getFrames()), output);
             }
         };
+    }
+
+    @GET
+    @Path("/test")
+    public String testMe(@User Account theAccount) {
+        System.out.println(theAccount.getUsername());
+        return "ok ok ok";
+    }
+
+    @POST
+    @Path("/login")
+    @Consumes("application/x-www-form-urlencoded")
+    public String login(@FormParam("username") String username, @FormParam("password") String password,
+                      @Context HttpServletRequest request) {
+        Account account;
+        try {
+            account=service.authenticate(username, password);
+        } catch (NoResultException e) {
+            account=service.createAccount(username, password);
+        }
+
+        request.getSession().setAttribute("mm.account", account);
+        return "true";
     }
 }

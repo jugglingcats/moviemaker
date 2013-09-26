@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Manage your Projects</title>
+
+    <link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" />
+</head>
+
+<body ng-app="angular-auth-demo" class="auth-demo-application waiting-for-angular">
+
+<div id="content-outer">
+
+    <div id="login-holder">
+        <div id="loginbox">
+            <div id="login-inner" ng:controller="LoginController">
+                Note: there is no need to enter any credentials.<br>&nbsp;
+                <form ng-submit="submit()" method="post" enctype="application/x-www-form-urlencoded">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <th>Username</th>
+                            <td><input type="text" class="login-inp" ng-model="username"/></td>
+                        </tr>
+                        <tr>
+                            <th>Password</th>
+                            <td><input type="password" class="login-inp" ng-model="password"/></td>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <td><input type="submit" class="submit-login"/></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+
+    <div id="content" >
+
+        <h1>HTTP Auth Interceptor Module Demo</h1>
+        <h2>for AngularJS</h2>
+
+        <h3>Enter some data and submit to send and access protected data.</h3>
+        <form ng-submit="restrictedAction()">
+            Enter restricted data:
+            <input type="text" ng-model="restrictedData">
+            <input type="submit" value="Submit"></input>
+        </form>
+
+        <br/>
+        <br/>
+
+        <h3>Press the button to log out.</h3>
+        <input type="button" value="Log out" ng-click="logout()"></input>
+    </div>
+</div>
+
+<script src="js/angular.min.js" type="text/javascript"></script>
+<script src="js/http-auth-interceptor.js" type="text/javascript"></script>
+<script src="js/moviemaker.js" type="text/javascript"></script>
+
+</body>
+</html>
