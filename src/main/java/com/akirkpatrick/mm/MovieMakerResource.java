@@ -2,12 +2,14 @@ package com.akirkpatrick.mm;
 
 import com.akirkpatrick.mm.generator.MovieGenerator;
 import com.akirkpatrick.mm.model.Account;
+import com.akirkpatrick.mm.model.Project;
 import com.akirkpatrick.mm.rest.User;
 import com.akirkpatrick.mm.web.MovieMakerSession;
 import com.akirkpatrick.mm.web.SessionHelper;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.StreamingOutput;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 @Component
 @Path("/mm")
@@ -83,5 +86,19 @@ public class MovieMakerResource {
 
         request.getSession().setAttribute("mm.account", account);
         return account;
+    }
+
+    @POST
+    @Path("/logout")
+    public String logout(@Context HttpServletRequest request) {
+        request.getSession().invalidate();
+        return "true";
+    }
+
+    @GET
+    @Path("/project")
+    @Produces({"text/json", "text/xml"})
+    public List<Project> project(@User Account account) {
+        return account.getProjects();
     }
 }

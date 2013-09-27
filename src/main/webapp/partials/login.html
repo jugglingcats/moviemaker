@@ -1,0 +1,29 @@
+<div class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Sign in to Movie Maker</h4>
+            </div>
+            <form ng-submit="submit()">
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <a class="close" data-dismiss="alert" href="#">x</a>Incorrect Username or Password!
+                    </div>
+                    <div class="btn-block">
+                        <input class="col-lg-span3 form-control" placeholder="Username" type="text" name="username" ng-model="username">
+                    </div>
+                    <div class="btn-block">
+                        <input class="col-lg-span3 form-control" placeholder="Password" type="password" ng-model="password">
+                    </div>
+                    <label class="checkbox">
+                        <input type="checkbox" name="remember" value="1"> Remember Me
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button class="btn-primary btn" type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

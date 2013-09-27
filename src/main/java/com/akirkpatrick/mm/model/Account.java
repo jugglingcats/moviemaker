@@ -1,5 +1,6 @@
 package com.akirkpatrick.mm.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -40,6 +41,7 @@ public class Account {
         return project;
     }
 
+    @JsonIgnore
     public List<Project> getProjects() {
         return projects;
     }
