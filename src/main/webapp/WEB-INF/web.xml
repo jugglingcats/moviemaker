@@ -27,10 +27,36 @@
             <param-name>com.sun.jersey.config.property.packages</param-name>
             <param-value>com.akirkpatrick.classifieds.resources;com.akirkpatrick.mm</param-value>
         </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+            <param-value>true</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
+
+    <filter>
+        <filter-name>
+            OpenEntityManagerInViewFilter
+        </filter-name>
+        <filter-class>
+            org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter
+        </filter-class>
+        <init-param>
+            <param-name>singleSession</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>flushMode</param-name>
+            <param-value>AUTO</param-value>
+        </init-param>
+    </filter>
+    <!-- Include this if you are using Hibernate -->
+    <filter-mapping>
+        <filter-name>OpenEntityManagerInViewFilter</filter-name>
+        <url-pattern>/rest/*</url-pattern>
+    </filter-mapping>
 </web-app>

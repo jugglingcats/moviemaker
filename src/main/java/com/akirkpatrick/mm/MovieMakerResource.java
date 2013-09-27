@@ -71,7 +71,8 @@ public class MovieMakerResource {
     @POST
     @Path("/login")
     @Consumes("application/x-www-form-urlencoded")
-    public String login(@FormParam("username") String username, @FormParam("password") String password,
+    @Produces({"text/json", "text/xml"})
+    public Account login(@FormParam("username") String username, @FormParam("password") String password,
                       @Context HttpServletRequest request) {
         Account account;
         try {
@@ -81,6 +82,6 @@ public class MovieMakerResource {
         }
 
         request.getSession().setAttribute("mm.account", account);
-        return "true";
+        return account;
     }
 }

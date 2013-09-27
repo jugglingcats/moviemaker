@@ -113,27 +113,20 @@
             return {
                 restrict: 'C',
                 link: function (scope, elem, attrs) {
-                    console.log("starting");
-
                     //once Angular is started, remove class:
                     elem.removeClass('waiting-for-angular');
-                    console.log("done remove class");
 
                     var login = elem.find('#login-holder');
                     var main = elem.find('#content');
-                    console.log("found elems");
-
-//                    login.hide();
-//                    console.log("hid login form");
 
                     scope.$on('event:auth-loginRequired', function () {
-//                        login.slideDown('slow', function () {
-//                            main.hide();
-//                        });
+                        console.log("login required");
+                        login.modal();
+
                     });
-                    scope.$on('event:auth-loginConfirmed', function () {
-//                        main.show();
-//                        login.slideUp();
+                    scope.$on('event:auth-loginConfirmed', function (event, data) {
+                        scope.account=data;
+                        login.hide();
                     });
                 }
             }
@@ -147,11 +140,17 @@
                     url: 'rest/mm/login',
                     data: 'username='+$scope.username+"&password="+$scope.password,
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-                }).success(function() {
-                    authService.loginConfirmed();
+                }).success(function(result) {
+                    authService.loginConfirmed(result);
+                });
+            }
+        },
+        ProjectsController: function($scope, $http) {
+            $scope.testme = function() {
+                $http.get('rest/mm/test').success(function(result) {
+                    console.log("did test");
                 });
             }
         }
-
     });
 })();
