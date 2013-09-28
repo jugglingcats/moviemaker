@@ -1,12 +1,10 @@
 package com.akirkpatrick.mm.rest;
 
 import com.akirkpatrick.mm.model.Account;
-import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.core.spi.component.ComponentContext;
 import com.sun.jersey.core.spi.component.ComponentScope;
 import com.sun.jersey.spi.inject.Injectable;
 import com.sun.jersey.spi.inject.InjectableProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -42,11 +40,14 @@ public class UserProvider implements Injectable<Account>, InjectableProvider<Use
 
     @Override
     public Account getValue() {
-        final Account account = (Account) request.getSession().getAttribute("mm.account");
-        if (account == null) {
+        final Object accountId = request.getSession().getAttribute("mm.account");
+        if (accountId == null) {
             throw new WebApplicationException(Response.Status.UNAUTHORIZED);
         }
-        em.merge(account);
+        Account account = em.find(Account.class, accountId);
+        if ( account == null ) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
         return account;
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 
 @Entity
 public class Project {
+
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
@@ -16,6 +17,10 @@ public class Project {
 
     @ElementCollection(targetClass=String.class)
     private List<String> frames=new ArrayList<String>();
+
+    public Long getId() {
+        return id;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -31,5 +36,13 @@ public class Project {
 
     public List<String> getFrames() {
         return frames;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public Account getAccount() {
+        return account;
     }
 }

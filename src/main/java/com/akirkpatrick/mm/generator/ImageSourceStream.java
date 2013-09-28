@@ -1,14 +1,11 @@
 package com.akirkpatrick.mm.generator;
 
-import org.springframework.util.FileSystemUtils;
-
 import javax.media.Buffer;
 import javax.media.Format;
 import javax.media.format.VideoFormat;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.PullBufferStream;
 import java.awt.*;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.List;

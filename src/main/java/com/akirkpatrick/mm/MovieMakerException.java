@@ -5,10 +5,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 public class MovieMakerException extends WebApplicationException {
-    public MovieMakerException(String message) {
-        super(Response
+    public MovieMakerException(Exception e) {
+        super(e, Response
                 .status(Response.Status.INTERNAL_SERVER_ERROR)
-                .entity(message)
+                .entity(e.getMessage())
                 .type(MediaType.TEXT_PLAIN)
                 .build());
     }
