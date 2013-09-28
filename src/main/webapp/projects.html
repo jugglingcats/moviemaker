@@ -4,28 +4,69 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Manage your Projects</title>
 
-    <link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/bootstrap-slate.min.css" type="text/css" media="screen" />
 </head>
 
-<body ng-app="moviemaker" class="moviemaker-application waiting-for-angular">
+<body ng-app="moviemaker" ng:controller="ProjectsController" class="moviemaker-application waiting-for-angular">
+
+<div class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="../" class="navbar-brand">Movie Maker</a>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+            <ul class="nav navbar-nav">
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown" ng-show="account.username != undefined">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Logged in: {{account.username}} <span class="caret"></span></a>
+                    <ul class="dropdown-menu" aria-labelledby="themes">
+                        <li><a tabindex="-1" href="#" ng-click="logout()">Logout</a></li>
+                        <!--<li class="divider"></li>-->
+                    </ul>
+                </li>
+                <li ></li>
+                <li><a href="http://builtwithbootstrap.com/" target="_blank">Built With Bootstrap</a></li>
+            </ul>
+
+        </div>
+    </div>
+</div>
 
 <div id="content-outer" class="container">
 
-    <div login-form>
+    <div login-form></div>
 
-    </div>
+    <div id="content">
 
-    <div id="content" ng:controller="ProjectsController" ng:init="init()">
-        <p>Hello {{account.username}}<br></p>
-
-        <ul>
-            <li ng-repeat='project in projects'>
-                {{project.name}}
-            </li>
-        </ul>
-
-        <h3>Press the button to log out.</h3>
-        <input type="button" value="Log out" ng-click="logout()" />
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Projects</h3>
+            </div>
+            <div class="panel-body">
+                <div class="alert alert-info" ng-show="projects.length == 0">You do not have any projects yet. Create a new one below.</div>
+                <div class="alert alert-info" ng-show="projects == undefined">Loading projects...</div>
+                <ul>
+                    <li ng-repeat='project in projects'>
+                        <a href="moviemaker.html#/!/?project={{project.id}}">{{project.name}}</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="panel-footer">
+                <div class="input-group"  style="width: 30%">
+                    <input type="text" class="form-control" ng-model="newProjectName">
+                    <div class="input-group-btn btn-group">
+                        <button class="btn btn-default" ng-click="createProject()">Add Project</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

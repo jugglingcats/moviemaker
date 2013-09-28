@@ -1,18 +1,28 @@
 (function () {
-    var APP = angular.module('moviemaker', ['login-ui', 'ngResource']);
+    var MM = angular.module('moviemaker', ['login-ui', 'ngResource']);
 
-    APP.controller('MovieMakerCtrl', function ($scope, $http) {
+    MM.controller('MovieMakerCtrl', function ($scope, $http, $location, $resource) {
+        var Project = $resource('rest/mm/project/:projectId', { projectId: '@projectId' });
+
+        $scope.projectId=($location.search()).project;
+        if ( $scope.projectId == undefined ) {
+            throw "Project not passed to page!";
+        }
+
         var streaming = false,
             video = document.querySelector('#video'),
-            preview = _V_('preview-player'),
             canvas = document.querySelector('#canvas'),
             width = 640,
             height = 0;
 
-        var snaps = [];
         var index = 0;
         var interval = 200;
         $scope.mode = 'grid';
+        $scope.onionEnabled = true;
+
+        $scope.project=Project.get({projectId: $scope.projectId});
+//        var snaps = $scope.project.frames || [];
+        console.log($scope.project);
 
         navigator.getMedia = ( navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
@@ -75,23 +85,19 @@
             }
         }
 
-        $scope.snaps = snaps;
-        $scope.onionEnabled = true;
-
         var post = function (data) {
             var header = "data:image/jpeg;base64";
-//            var data=snaps[0];
             if (data.indexOf(header) != 0) {
                 throw "expected '" + header + "' at start of data";
             }
             var base64data = data.substr(header.length + 1);
 
-            $http.post('/rest/mm/post', base64data, {
+            $http.post('/rest/mm/post/'+$scope.projectId, base64data, {
                 headers: { 'Content-Type': "text/plain" },
                 transformRequest: angular.identity
             }).success(function (result) {
                     console.log("posted! " + result);
-                    snaps.push(result);
+                    $scope.project.frames.push(result);
 //                    $scope.uploadedImgSrc = result.src;
 //                    $scope.sizeInBytes = result.size;
                 }).error(function (result) {
@@ -102,12 +108,23 @@
         };
     });
 
-    APP.controller({
-        ProjectsController: function ($scope, $http, $resource) {
+    MM.controller({
+        ProjectsController: function ($scope, $rootScope, $http, $resource, $window) {
             var Project = $resource('rest/mm/project/:projectId', { projectId: '@projectId' });
+            var ProjectList = $resource('rest/mm/project/list');
+            var Account = $resource('rest/mm/account');
 
-            $scope.$on('$viewContentLoaded', function () {
-                $scope.projects = Project.query();
+            function refreshProjects() {
+                ProjectList.query(function(list) {$scope.projects=list;});
+//                $scope.projects = projects;
+            }
+
+            $rootScope.$watch('controllers', function () {
+                if ( $rootScope.controllers && $rootScope.controllers.length == 1 ) {
+                    // init the account (if logged in)
+                    $scope.account=Account.get();
+                    refreshProjects();
+                }
             });
 
             $scope.$on('event:auth-loginConfirmed', function (event, data) {
@@ -123,8 +140,18 @@
             $scope.logout = function () {
                 $http.post('rest/mm/logout').success(function (result) {
                     $scope.account = undefined;
+                    $window.location.reload();
                 });
             };
+
+            $scope.createProject = function() {
+                console.log("new project");
+                var project=new Project();
+                project.name=$scope.newProjectName;
+                project.$save(function() {
+                    refreshProjects();
+                });
+            }
         }
     });
 })();

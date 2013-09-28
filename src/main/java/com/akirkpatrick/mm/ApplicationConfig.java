@@ -3,6 +3,7 @@ package com.akirkpatrick.mm;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver;
+import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.hibernate3.HibernateExceptionTranslator;
@@ -22,8 +23,13 @@ public class ApplicationConfig {
 
     @Bean
     public DataSource dataSource() {
-        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
-                .build();
+        SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+        dataSource.setDriverClass(org.h2.Driver.class);
+        dataSource.setUrl("jdbc:h2:mm");
+        return dataSource;
+
+//        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
+//                .build();
     }
 
     @Bean

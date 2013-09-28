@@ -2,7 +2,6 @@ package com.akirkpatrick.mm;
 
 import com.akirkpatrick.mm.model.Account;
 import com.akirkpatrick.mm.model.Project;
-import com.akirkpatrick.mm.web.MovieMakerSession;
 import com.sun.jersey.core.util.Base64;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +20,8 @@ public class MovieMakerService {
     @PersistenceContext
     private EntityManager em;
 
-    public String store(String base64data, MovieMakerSession mms) {
+    @Transactional
+    public String store(String base64data, Account account, Long projectId) {
         UUID uuid = UUID.randomUUID();
         byte[] bytes = Base64.decode(base64data);
         try {
@@ -30,10 +30,25 @@ public class MovieMakerService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        mms.addFrame(uuid);
-        return FileHelper.toImageDownloadUrl(uuid);
+        Project project = getProject(account, projectId);
+        project.addFrame(uuid.toString());
+
+        return uuid.toString();
     }
 
+    @Transactional(readOnly=true)
+    public Project getProject(Account account, Long projectId) {
+        Project project = em.find(Project.class, projectId);
+        if ( project == null ) {
+            throw new IllegalArgumentException("Project not found with id: "+projectId);
+        }
+        if ( !account.getId().equals(project.getAccount().getId()) ) {
+            throw new IllegalArgumentException("Attempting to access a project not owned by account!");
+        }
+        return project;
+    }
+
+    @Transactional(readOnly=true)
     public Account authenticate(String username, String password) {
         Query query = em.createNamedQuery("Account.findByUsername");
         query.setParameter("username", username);
@@ -51,16 +66,24 @@ public class MovieMakerService {
     }
 
     @Transactional
-    public Project createProject(String name) {
+    public Project addProject(Account account, String name) {
         Project project=new Project();
         project.setName(name);
+        project.setAccount(account);
         em.persist(project);
+        account.getProjects().add(project);
         return project;
     }
 
+    @Transactional(readOnly=true)
     public boolean isAccount(String username) {
         return em.createNamedQuery("Account.findByUsername")
                 .setParameter("username", username)
                 .getResultList().size() == 1;
+    }
+
+    @Transactional(readOnly=true)
+    public Project findProject(Long projectId) {
+        return em.find(Project.class, projectId);
     }
 }

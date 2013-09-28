@@ -5,7 +5,7 @@ angular.module('login-ui', ['http-auth-interceptor'])
             replace: true,
             scope: { },
             templateUrl: 'partials/login.html',
-            controller: function ($scope, $http, authService) {
+            controller: function ($rootScope, $scope, $http, authService) {
                 $scope.submit = function () {
                     // TODO: guard against code injection
                     $http({
@@ -17,13 +17,14 @@ angular.module('login-ui', ['http-auth-interceptor'])
                             authService.loginConfirmed(result);
                         });
                 }
+
+                $rootScope.controllers = ($rootScope.controllers || []);
+                $rootScope.controllers.push('login-ui');
             },
 //            compile: function(element, attrs) {
 //                console.log("compile for directive");
 //            },
             link: function ($rootScope, element, attrs) {
-                console.log("login directive init")
-
                 $rootScope.$on('event:auth-loginRequired', function () {
                     console.log("login required");
                     element.modal();

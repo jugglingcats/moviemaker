@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.Vector;
 
 public class FileHelper {
 
@@ -20,9 +19,9 @@ public class FileHelper {
         return "tmp/" + id + ".jpg";
     }
 
-    public static List<String> toPaths(List<UUID> frames) {
+    public static List<String> toPaths(List<?> frames) {
         List<String> retval=new ArrayList<String>();
-        for ( UUID uuid : frames ) {
+        for ( Object uuid : frames ) {
             retval.add(toPath(uuid.toString()));
         }
         return retval;

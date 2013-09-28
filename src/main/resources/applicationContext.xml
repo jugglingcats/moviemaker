@@ -6,7 +6,7 @@
 	http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <context:component-scan base-package="com.akirkpatrick.classifieds,com.akirkpatrick.mm"/>
+    <context:component-scan base-package="com.akirkpatrick.mm"/>
 
     <!--<bean id="myservice"-->
         <!--class="com.akirkpatrick.classifieds.service.MyService" />-->

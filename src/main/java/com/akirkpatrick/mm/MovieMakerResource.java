@@ -4,12 +4,9 @@ import com.akirkpatrick.mm.generator.MovieGenerator;
 import com.akirkpatrick.mm.model.Account;
 import com.akirkpatrick.mm.model.Project;
 import com.akirkpatrick.mm.rest.User;
-import com.akirkpatrick.mm.web.MovieMakerSession;
-import com.akirkpatrick.mm.web.SessionHelper;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
@@ -28,14 +25,13 @@ public class MovieMakerResource {
     private MovieMakerService service;
 
     @POST
-    @Path("/post")
+    @Path("/post/{projectId}")
     @Consumes(MediaType.TEXT_PLAIN)
-    public String acceptSingle(String base64data, @Context HttpServletRequest request) {
+    public String addImageToProject(@User Account account, @PathParam("projectId") Long projectId, String base64data) {
         try {
-            MovieMakerSession mms= SessionHelper.getFrom(request);
-            return service.store(base64data, mms);
+            return service.store(base64data, account, projectId);
         } catch (Exception e) {
-            throw new MovieMakerException(e.getMessage());
+            throw new MovieMakerException(e);
         }
     }
 
@@ -51,24 +47,16 @@ public class MovieMakerResource {
     }
 
     @GET
-    @Path("/download")
-    @Produces("video/mp4")
-    public StreamingOutput getMovie(@Context HttpServletRequest request) {
-        System.out.println("Video generation requested");
-        final MovieMakerSession mms=SessionHelper.getFrom(request);
+    @Path("/download/{projectId}")
+    @Produces("video/quicktime")
+    public StreamingOutput getMovie(@User Account account, @PathParam("projectId") Long projectId) {
+        final Project project=service.getProject(account, projectId);
         return new StreamingOutput() {
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
-                new MovieGenerator().create(FileHelper.toPaths(mms.getFrames()), output);
+                new MovieGenerator().create(FileHelper.toPaths(project.getFrames()), output);
             }
         };
-    }
-
-    @GET
-    @Path("/test")
-    public String testMe(@User Account theAccount) {
-        System.out.println(theAccount.getUsername());
-        return "ok ok ok";
     }
 
     @POST
@@ -84,7 +72,7 @@ public class MovieMakerResource {
             account=service.createAccount(username, password);
         }
 
-        request.getSession().setAttribute("mm.account", account);
+        request.getSession().setAttribute("mm.account", account.getId());
         return account;
     }
 
@@ -96,9 +84,35 @@ public class MovieMakerResource {
     }
 
     @GET
-    @Path("/project")
+    @Path("/project/{projectId}")
+    @Produces({"text/json", "text/xml"})
+    public Project project(@User Account account, @PathParam("projectId") Long projectId) {
+        return service.findProject(projectId);
+    }
+
+    @GET
+    @Path("/project/list")
     @Produces({"text/json", "text/xml"})
     public List<Project> project(@User Account account) {
         return account.getProjects();
     }
+
+    @POST
+    @Path("/project")
+    @Produces({"text/json", "text/xml"})
+    @Consumes({"application/json", "text/json", "text/xml"})
+    public Project projectCreateOrUpdate(@User Account account, Project project) {
+        if ( project.getId() != null ) {
+            throw new IllegalArgumentException("Update of project not allowed yet!");
+        }
+        return service.addProject(account, project.getName());
+    }
+
+    @GET
+    @Path("/account")
+    @Produces({"text/json", "text/xml"})
+    public Account account(@User Account account) {
+        return account;
+    }
+
 }

@@ -1,7 +1,6 @@
 package com.akirkpatrick.mm.model;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -44,5 +43,9 @@ public class Account {
     @JsonIgnore
     public List<Project> getProjects() {
         return projects;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

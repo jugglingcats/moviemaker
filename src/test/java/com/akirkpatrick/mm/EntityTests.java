@@ -58,7 +58,7 @@ public class EntityTests extends Assert {
     @Transactional
     public void testAddProjectWithFrames() {
         Account a=mms.createAccount("alfie", "password");
-        Project p=mms.createProject("test1");
+        Project p=mms.addProject(a, "test1");
         a.addProject(p);
         p.addFrame("x");
 
