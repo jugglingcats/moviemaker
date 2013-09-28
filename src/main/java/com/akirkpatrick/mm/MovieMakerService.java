@@ -26,6 +26,11 @@ public class MovieMakerService {
         byte[] bytes = Base64.decode(base64data);
         try {
             File file = FileHelper.toFile(uuid);
+            File dir=new File(file.getParent());
+            if ( !dir.exists() ) {
+                dir.mkdir();
+            }
+
             FileCopyUtils.copy(bytes, file);
         } catch (IOException e) {
             throw new RuntimeException(e);
