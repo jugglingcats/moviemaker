@@ -111,7 +111,7 @@ public class MovieMakerResource {
     @GET
     @Path("/account")
     @Produces({"text/json", "text/xml"})
-    public Account account(@User Account account) {
+    public Account account(@User(required = false) Account account) {
         return account;
     }
 

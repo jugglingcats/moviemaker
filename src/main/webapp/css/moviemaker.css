@@ -16,6 +16,10 @@ html, body {
     /*display: inline;*/
 /*}*/
 
+.editor-panel {
+    position: relative;
+}
+
 #video {
     position: relative;
     left: 0px;
@@ -23,7 +27,7 @@ html, body {
 }
 
 #canvas {
-    position: fixed;
+    position: absolute;
     left: 15px;
     top: 0px;
     opacity: 0.5;
@@ -43,7 +47,7 @@ html, body {
     zoom: 0.20;
 }
 
-.container {
+.editor-container {
     max-width: 3000px;
 }
 

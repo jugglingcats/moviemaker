@@ -2,6 +2,8 @@ package com.akirkpatrick.mm.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -18,6 +20,8 @@ public class Project {
     @ElementCollection(targetClass=String.class)
     private List<String> frames=new ArrayList<String>();
 
+    private Calendar lastModified=Calendar.getInstance();
+
     public Long getId() {
         return id;
     }
@@ -32,10 +36,11 @@ public class Project {
 
     public void addFrame(String uid) {
         frames.add(uid);
+        lastModified=Calendar.getInstance();
     }
 
     public List<String> getFrames() {
-        return frames;
+        return Collections.unmodifiableList(frames);
     }
 
     public void setAccount(Account account) {
@@ -44,5 +49,9 @@ public class Project {
 
     public Account getAccount() {
         return account;
+    }
+
+    public Calendar getLastModified() {
+        return lastModified;
     }
 }

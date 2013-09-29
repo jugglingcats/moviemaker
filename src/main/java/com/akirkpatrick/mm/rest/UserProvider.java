@@ -18,7 +18,7 @@ import java.lang.reflect.Type;
 
 @Provider
 @Component
-public class UserProvider implements Injectable<Account>, InjectableProvider<User, Type> {
+public class UserProvider implements InjectableProvider<User, Type> {
     @Context
     private HttpServletRequest request;
 
@@ -26,9 +26,26 @@ public class UserProvider implements Injectable<Account>, InjectableProvider<Use
     private EntityManager em;
 
     @Override
-    public Injectable getInjectable(ComponentContext ic, User user, Type type) {
+    public Injectable getInjectable(ComponentContext ic, final User user, Type type) {
         if (type.equals(Account.class)) {
-            return this;
+            return new Injectable<Account>() {
+                @Override
+                public Account getValue() {
+                    final Object accountId = request.getSession().getAttribute("mm.account");
+                    if ( accountId == null ) {
+                        if ( user.required() ) {
+                            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+                        } else {
+                            return null;
+                        }
+                    }
+                    Account account = em.find(Account.class, accountId);
+                    if (account == null) {
+                        throw new WebApplicationException(Response.Status.NOT_FOUND);
+                    }
+                    return account;
+                }
+            };
         }
         return null;
     }
@@ -38,17 +55,17 @@ public class UserProvider implements Injectable<Account>, InjectableProvider<Use
         return ComponentScope.PerRequest;
     }
 
-    @Override
-    public Account getValue() {
-        final Object accountId = request.getSession().getAttribute("mm.account");
-        if (accountId == null) {
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-        }
-        Account account = em.find(Account.class, accountId);
-        if ( account == null ) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-        return account;
-    }
-
+//    @Override
+//    public Account getValue() {
+//        final Object accountId = request.getSession().getAttribute("mm.account");
+//        if (accountId == null) {
+//            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+//        }
+//        Account account = em.find(Account.class, accountId);
+//        if (account == null) {
+//            throw new WebApplicationException(Response.Status.NOT_FOUND);
+//        }
+//        return account;
+//    }
+//
 }

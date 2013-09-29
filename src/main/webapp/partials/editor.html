@@ -1,23 +1,13 @@
-<!DOCTYPE html>
-<html ng-app="moviemaker">
-<head>
-    <title></title>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-slate.min.css"/>
-    <link rel="stylesheet" type="text/css" href="css/moviemaker.css"/>
-    <!--<link rel="stylesheet" type="text/css" href="video/video-js.min.css"/>-->
-</head>
-<body ng-controller="MovieMakerCtrl" ng-keydown="keydown($event)">
-
-<div class="container">
+<div class="container editor-container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 editor-panel">
             <video id="video"></video>
             <canvas ng-show="onionEnabled" id="canvas"></canvas>
         </div>
         <div id="timeline-div" class="col-md-6">
             <ul id="timeline" ng-show="mode == 'grid'">
                 <li ng-repeat="snap in project.frames">
-                    <div class="thumb-container" tabindex="0">
+                    <div class="thumb-container" tabindex="0" ng-focus="thumbfocus($index)">
                         <img class="thumb-img" ng-src="rest/mm/image/{{snap}}"/>
                     </div>
                 </li>
@@ -49,15 +39,3 @@
         </div>
     </div>
 </div>
-
-<p>
-</p>
-
-<script src="js/angular.min.js" type="text/javascript"></script>
-<script src="js/angular-resource.min.js" type="text/javascript"></script>
-<script src="js/http-auth-interceptor.js" type="text/javascript"></script>
-<script src="js/login.js" type="text/javascript"></script>
-<script src="js/moviemaker.js" type="text/javascript"></script>
-
-</body>
-</html>

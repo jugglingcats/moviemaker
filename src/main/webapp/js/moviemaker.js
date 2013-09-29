@@ -1,11 +1,11 @@
 (function () {
     var MM = angular.module('moviemaker', ['login-ui', 'ngResource']);
 
-    MM.controller('MovieMakerCtrl', function ($scope, $http, $location, $resource) {
+    MM.controller('MovieMakerCtrl', function ($scope, $http, $routeParams, $resource) {
         var Project = $resource('rest/mm/project/:projectId', { projectId: '@projectId' });
 
-        $scope.projectId=($location.search()).project;
-        if ( $scope.projectId == undefined ) {
+        $scope.projectId = $routeParams.projectId;
+        if ($scope.projectId == undefined) {
             throw "Project not passed to page!";
         }
 
@@ -20,7 +20,7 @@
         $scope.mode = 'grid';
         $scope.onionEnabled = true;
 
-        $scope.project=Project.get({projectId: $scope.projectId});
+        $scope.project = Project.get({projectId: $scope.projectId});
 //        var snaps = $scope.project.frames || [];
         console.log($scope.project);
 
@@ -92,7 +92,7 @@
             }
             var base64data = data.substr(header.length + 1);
 
-            $http.post('/rest/mm/post/'+$scope.projectId, base64data, {
+            $http.post('/rest/mm/post/' + $scope.projectId, base64data, {
                 headers: { 'Content-Type': "text/plain" },
                 transformRequest: angular.identity
             }).success(function (result) {
@@ -108,50 +108,81 @@
         };
     });
 
-    MM.controller({
-        ProjectsController: function ($scope, $rootScope, $http, $resource, $window) {
-            var Project = $resource('rest/mm/project/:projectId', { projectId: '@projectId' });
-            var ProjectList = $resource('rest/mm/project/list');
-            var Account = $resource('rest/mm/account');
+    MM.controller('ProjectsCtrl', function ($scope, $rootScope, $http, $resource, $window, accountService) {
+        var Project = $resource('rest/mm/project/:projectId', { projectId: '@projectId' });
+        var ProjectList = $resource('rest/mm/project/list');
 
-            function refreshProjects() {
-                ProjectList.query(function(list) {$scope.projects=list;});
-//                $scope.projects = projects;
-            }
-
-            $rootScope.$watch('controllers', function () {
-                if ( $rootScope.controllers && $rootScope.controllers.length == 1 ) {
-                    // init the account (if logged in)
-                    $scope.account=Account.get();
-                    refreshProjects();
-                }
+        function refreshProjects() {
+            ProjectList.query(function (list) {
+                $scope.projects = list;
             });
-
-            $scope.$on('event:auth-loginConfirmed', function (event, data) {
-                $scope.account = data;
-            });
-
-            $scope.testme = function () {
-                console.log("test pressed");
-                $http.get('rest/mm/test').success(function (result) {
-                    console.log("done test");
-                });
-            }
-            $scope.logout = function () {
-                $http.post('rest/mm/logout').success(function (result) {
-                    $scope.account = undefined;
-                    $window.location.reload();
-                });
-            };
-
-            $scope.createProject = function() {
-                console.log("new project");
-                var project=new Project();
-                project.name=$scope.newProjectName;
-                project.$save(function() {
-                    refreshProjects();
-                });
-            }
         }
+
+        $rootScope.$watch('controllers', function () {
+            if ($rootScope.controllers && $rootScope.controllers.length == 1) {
+                refreshProjects();
+            }
+        });
+
+        $scope.moment = function(d) {
+            return moment(d).fromNow();
+        };
+
+        $scope.createProject = function () {
+            console.log("new project");
+            var project = new Project();
+            project.name = $scope.newProjectName;
+            project.$save(function () {
+                refreshProjects();
+            });
+        }
+    });
+
+    MM.controller('WelcomeCtrl', function ($scope) {
+        $scope.doit = function () {
+            alert("done");
+        }
+    });
+
+    MM.config(['$routeProvider', function ($routeProvider) {
+        $routeProvider
+            .when('/welcome', {templateUrl: 'partials/welcome.html', controller: 'WelcomeCtrl'})
+            .when('/projects', {templateUrl: 'partials/projects.html', controller: 'ProjectsCtrl'})
+            .when('/project/:projectId', {templateUrl: 'partials/editor.html', controller: 'MovieMakerCtrl'})
+            .otherwise({redirectTo: '/welcome'})
+    }]);
+
+    MM.factory('accountService', function () {
+        var accountInfo = {};
+        return accountInfo;
+    })
+
+    MM.directive('navbar', function () {
+        return {
+            restrict: 'A',
+            replace: true,
+            scope: { },
+            templateUrl: 'partials/navbar.html',
+            controller: function($scope, $http, $resource, accountService) {
+                var Account = $resource('rest/mm/account');
+
+                // init the account (if logged in)
+                accountService.account = Account.get();
+
+                $scope.$on('event:auth-loginConfirmed', function (event, data) {
+                    console.log("login confirmed...");
+                    accountService.account=data;
+                });
+
+                $scope.logout = function () {
+                    $http.post('rest/mm/logout').success(function (result) {
+                        accountService.account = undefined;
+                        $window.location.reload();
+                    });
+                };
+
+                $scope.accountService=accountService;
+            }
+        };
     });
 })();
