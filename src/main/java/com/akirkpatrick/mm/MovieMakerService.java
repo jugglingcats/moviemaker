@@ -3,6 +3,7 @@ package com.akirkpatrick.mm;
 import com.akirkpatrick.mm.model.Account;
 import com.akirkpatrick.mm.model.Project;
 import com.sun.jersey.core.util.Base64;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -13,6 +14,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -53,6 +56,12 @@ public class MovieMakerService {
         return project;
     }
 
+    @Transactional
+    public void deleteFrame(Account account, Long projectId, Integer frameNum) {
+        Project project=getProject(account, projectId);
+        project.removeFrame(frameNum);
+    }
+
     @Transactional(readOnly=true)
     public Account authenticate(String username, String password) {
         Query query = em.createNamedQuery("Account.findByUsername");
@@ -90,5 +99,32 @@ public class MovieMakerService {
     @Transactional(readOnly=true)
     public Project findProject(Long projectId) {
         return em.find(Project.class, projectId);
+    }
+
+    @Scheduled(fixedDelay=10000)
+    @Transactional
+    public void cleanup() {
+        // find projects that haven't been modified for more than 24 hrs
+        Calendar calendar=Calendar.getInstance();
+        calendar.roll(Calendar.MINUTE, false);
+
+        System.out.println("cleaning up expired projects...");
+
+        List<Project> list = em.createNamedQuery("Project.findExpired", Project.class)
+                .setParameter("cutoff", calendar)
+                .getResultList();
+
+        for ( Project p : list ) {
+            System.out.println("deleting project: "+p.getAccount().getUsername()+":"+p.getName());
+            // delete all the frames
+            List<String> frames = p.getFrames();
+            for ( String f : frames ) {
+                System.out.println("+ deleting frame: "+f);
+                FileHelper.delete(f);
+            }
+            // delete the project
+            em.remove(p);
+        }
+        System.out.println("cleanup done");
     }
 }

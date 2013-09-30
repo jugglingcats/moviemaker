@@ -4,6 +4,8 @@
     MM.controller('MovieMakerCtrl', function ($scope, $http, $routeParams, $resource) {
         var Project = $resource('rest/mm/project/:projectId', { projectId: '@projectId' });
 
+        $scope.previewImage=0;
+
         $scope.projectId = $routeParams.projectId;
         if ($scope.projectId == undefined) {
             throw "Project not passed to page!";
@@ -85,6 +87,19 @@
             }
         }
 
+        $scope.select = function (index) {
+            $scope.selectedImage = index;
+            $scope.previewImage = index;
+        }
+
+        $scope.deleteImage = function () {
+            console.log("delete: " + $scope.selectedImage);
+            var Frame = $resource('rest/mm/delete/:projectId/:frameNum', { projectId: '@projectId', frameNum: '@frameNum' });
+            Frame.delete({projectId: $scope.projectId, frameNum: $scope.selectedImage}, function () {
+                $scope.project.frames.splice($scope.selectedImage, 1);
+            });
+        };
+
         var post = function (data) {
             var header = "data:image/jpeg;base64";
             if (data.indexOf(header) != 0) {
@@ -124,7 +139,7 @@
             }
         });
 
-        $scope.moment = function(d) {
+        $scope.moment = function (d) {
             return moment(d).fromNow();
         };
 
@@ -163,7 +178,7 @@
             replace: true,
             scope: { },
             templateUrl: 'partials/navbar.html',
-            controller: function($scope, $http, $resource, accountService) {
+            controller: function ($scope, $http, $resource, accountService) {
                 var Account = $resource('rest/mm/account');
 
                 // init the account (if logged in)
@@ -171,7 +186,7 @@
 
                 $scope.$on('event:auth-loginConfirmed', function (event, data) {
                     console.log("login confirmed...");
-                    accountService.account=data;
+                    accountService.account = data;
                 });
 
                 $scope.logout = function () {
@@ -181,8 +196,22 @@
                     });
                 };
 
-                $scope.accountService=accountService;
+                $scope.accountService = accountService;
             }
+        };
+    });
+    MM.directive('mmFocus', function () {
+        return function (scope, elem, attrs) {
+            elem.bind('focus', function () {
+                scope.$apply(attrs.mmFocus);
+            });
+        };
+    });
+    MM.directive('mmBlur', function () {
+        return function (scope, elem, attrs) {
+            elem.bind('blur', function () {
+                scope.$apply(attrs.mmBlur);
+            });
         };
     });
 })();

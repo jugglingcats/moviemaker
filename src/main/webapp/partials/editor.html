@@ -1,41 +1,63 @@
 <div class="container editor-container">
     <div class="row">
-        <div class="col-md-6 editor-panel">
-            <video id="video"></video>
-            <canvas ng-show="onionEnabled" id="canvas"></canvas>
-        </div>
-        <div id="timeline-div" class="col-md-6">
-            <ul id="timeline" ng-show="mode == 'grid'">
-                <li ng-repeat="snap in project.frames">
-                    <div class="thumb-container" tabindex="0" ng-focus="thumbfocus($index)">
-                        <img class="thumb-img" ng-src="rest/mm/image/{{snap}}"/>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-md-6">
             <button type="button" class="btn btn-primary" ng-click="snap()" title="Take Picture">
                 <span class="glyphicon glyphicon-camera"></span>
             </button>
-            <button type="button" class="btn btn-primary" ng-show="onionEnabled" ng-click="toggleOnion()" title="Onion Skinning Off">
+            <button type="button" class="btn btn-primary" ng-show="onionEnabled" ng-click="toggleOnion()"
+                    title="Onion Skinning Off">
                 <span class="glyphicon glyphicon-eye-close"></span>
             </button>
-            <button type="button" class="btn btn-primary" ng-hide="onionEnabled" ng-click="toggleOnion()" title="Onion Skinning On">
+            <button type="button" class="btn btn-primary" ng-hide="onionEnabled" ng-click="toggleOnion()"
+                    title="Onion Skinning On">
                 <span class="glyphicon glyphicon-eye-open"></span>
             </button>
             <a class="btn btn-primary" ng-href="/rest/mm/download/{{projectId}}" title="Download Video">
                 <span class="glyphicon glyphicon-download"></span>
             </a>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <button type="button" class="btn btn-primary" ng-click="mode='grid'" title="Show Grid">
                 <span class="glyphicon glyphicon-th"></span>
             </button>
-            <button type="button" class="btn btn-primary" ng-click="mode='video'" title="Show Grid">
+            <button type="button" class="btn btn-primary" ng-click="mode='video'" title="Show Preview">
                 <span class="glyphicon glyphicon-facetime-video"></span>
             </button>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-primary" ng-click="deleteImage()" title="Delete Frame">
+                <span class="glyphicon glyphicon-trash"></span>
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 editor-panel">
+            <video id="video"></video>
+            <canvas ng-show="onionEnabled" id="canvas"></canvas>
+        </div>
+        <div id="timeline-div" class="col-md-6">
+            <div id="timeline">
+                <div ng-repeat="snap in project.frames">
+                    <div class="thumb-container" tabindex="0"
+                         ng-show="mode == 'grid' || previewImage == $index"
+                         mm-focus="select($index)">
+
+                        <img ng-attr-class="{{mode=='grid' && 'thumb-img'}}" ng-src="rest/mm/image/{{snap}}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+        </div>
+        <div class="col-md-6" ng-show="mode == 'video'">
+            <input type="range" ng-model="previewImage" value="0" min="0" max="{{project.frames.length-1}}" step="1"
+                   class="ng-valid ng-dirty scrubber">
+            <input type="text" class="span2" ng-model="previewImage" data-slider-min="-20" data-slider-max="20" data-slider-step="1"
+                   data-slider-value="-14" data-slider-orientation="vertical" data-slider-selection="after"
+                   data-slider-tooltip="hide">
         </div>
     </div>
 </div>

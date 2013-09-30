@@ -35,6 +35,14 @@ public class MovieMakerResource {
         }
     }
 
+    @DELETE
+    @Path("/delete/{projectId}/{frameNum}")
+    @Consumes({MediaType.TEXT_PLAIN, MediaType.APPLICATION_XML})
+    public String deleteFrame(@User Account account, @PathParam("projectId") Long projectId, @PathParam("frameNum") Integer frameNum) {
+        service.deleteFrame(account, projectId, frameNum);
+        return "true";
+    }
+
     @GET
     @Path("/image/{id}")
     public StreamingOutput getImage(@PathParam("id") final String id) {
@@ -89,6 +97,7 @@ public class MovieMakerResource {
     public Project project(@User Account account, @PathParam("projectId") Long projectId) {
         return service.findProject(projectId);
     }
+
 
     @GET
     @Path("/project/list")

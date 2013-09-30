@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
+@NamedQuery(name="Project.findExpired", query="select p from Project p where p.lastModified < :cutoff")
 public class Project {
 
     @Id
@@ -18,6 +19,7 @@ public class Project {
     private Account account;
 
     @ElementCollection(targetClass=String.class)
+    @OrderColumn
     private List<String> frames=new ArrayList<String>();
 
     private Calendar lastModified=Calendar.getInstance();
@@ -53,5 +55,10 @@ public class Project {
 
     public Calendar getLastModified() {
         return lastModified;
+    }
+
+    public void removeFrame(Integer frameNum) {
+        frames.remove(frameNum.intValue());
+        lastModified=Calendar.getInstance();
     }
 }

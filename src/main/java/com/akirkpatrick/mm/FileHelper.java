@@ -31,4 +31,7 @@ public class FileHelper {
         return "/rest/mm/image/"+uuid.toString();
     }
 
+    public static void delete(String f) {
+        new File(toPath(f)).delete();
+    }
 }
