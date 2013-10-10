@@ -24,6 +24,7 @@ public class MovieGenerator implements ControllerListener, DataSinkListener {
     private Processor processor;
     private Object sync = new Object();
     private boolean success;
+    private boolean warning;
     private Exception error;
     private final MediaLocator mediaLocator = new MediaLocator("file:"+UUID.randomUUID().toString()+".mpg");
 
@@ -45,7 +46,12 @@ public class MovieGenerator implements ControllerListener, DataSinkListener {
                 sync.wait(5000);
             }
             processor.stop();
-            processor.close();
+            try {
+                processor.close();
+            } catch ( Exception e ) {
+                warning=true;
+                System.out.println("Got an exception on close of processor: "+e.getMessage());
+            }
 
             if ( success ) {
                 File result=new File(mediaLocator.getURL().getPath());

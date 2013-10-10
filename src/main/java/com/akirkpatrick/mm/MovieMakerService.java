@@ -101,7 +101,7 @@ public class MovieMakerService {
         return em.find(Project.class, projectId);
     }
 
-    @Scheduled(fixedDelay=10000)
+//    @Scheduled(fixedDelay=10000000)
     @Transactional
     public void cleanup() {
         // find projects that haven't been modified for more than 24 hrs

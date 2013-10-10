@@ -1,0 +1,41 @@
+<html lang="en">
+<head>
+    <script src="js/jquery-1.9.1.js" type="text/javascript"></script>
+    <script src="js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <!--<script src="js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>-->
+    <script src="js/angular.min.js" type="text/javascript"></script>
+    <!--<script src="js/bootstrap-slider.js" type="text/javascript"></script>-->
+
+    <!--<link rel="stylesheet" type="text/css" href="css/bootstrap-slate.min.css"/>-->
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/base/jquery-ui.css"/>
+</head>
+<body xng-app="myapp">
+
+<div id="slider" slider></div>
+
+<script>
+    $("#slider").slider({
+        value: 40,
+        min: 0,
+        max: 700,
+        step: 10 /*,
+        slide: function(event, ui) {
+            console.log("new val: "+ui.value);
+        } */
+    });
+
+    angular.module("myapp", []).directive("slider", function() {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                $(element).slider({
+                    min: 0,
+                    max: 20
+                });
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
