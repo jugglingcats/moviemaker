@@ -28,7 +28,7 @@ public class MovieGenerator implements ControllerListener, DataSinkListener {
     private Exception error;
     private final MediaLocator mediaLocator = new MediaLocator("file:"+UUID.randomUUID().toString()+".mpg");
 
-    public void create(List<String> frames, OutputStream output) {
+    public void create(List<String> frames, int fps, OutputStream output) {
 
         assert (frames.size() > 0);
         try {
@@ -36,9 +36,7 @@ public class MovieGenerator implements ControllerListener, DataSinkListener {
             int width = firstImage.getWidth();
             int height = firstImage.getHeight();
 
-            int framerate = 7;
-
-            ImageDataSource ids = new ImageDataSource(width, height, framerate, frames);
+            ImageDataSource ids = new ImageDataSource(width, height, fps, frames);
             processor = Manager.createProcessor(ids);
             processor.addControllerListener(this);
             synchronized (sync) {

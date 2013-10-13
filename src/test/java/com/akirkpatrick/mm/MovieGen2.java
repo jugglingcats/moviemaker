@@ -33,7 +33,7 @@ public class MovieGen2 {
         files.add("tmp/1bf4d04f-9a8f-462d-9616-8da2709a7660.jpg");
         files.add("tmp/5bc2ba6c-1ae9-4455-8032-bfd3ee243e74.jpg");
         files.add("tmp/9b613cb9-5b27-48a4-866e-051e6d633673.jpg");
-        new MovieGenerator().create(files, fios);
+        new MovieGenerator().create(files, 10, fios);
         fios.close();
     }
 }

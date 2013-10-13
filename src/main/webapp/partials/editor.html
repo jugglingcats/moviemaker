@@ -12,17 +12,31 @@
                     title="Onion Skinning On">
                 <span class="glyphicon glyphicon-eye-open"></span>
             </button>
+            <button type="button" class="btn" ng-attr-class="{{rotated && 'btn btn-info' || 'btn btn-primary'}}"
+                    ng-click="toggleRotate()"
+                    title="Rotate Video">
+                <span class="glyphicon glyphicon-refresh"></span>
+            </button>
             <a class="btn btn-primary" ng-href="/rest/mm/download/{{projectId}}" title="Download Video">
                 <span class="glyphicon glyphicon-download"></span>
             </a>
         </div>
         <div class="col-md-4">
-            <button type="button" class="btn btn-primary" ng-click="mode='grid'" title="Show Grid">
-                <span class="glyphicon glyphicon-th"></span>
-            </button>
-            <button type="button" class="btn btn-primary" ng-click="mode='video'" title="Show Preview">
-                <span class="glyphicon glyphicon-facetime-video"></span>
-            </button>
+            <div class="input-group">
+                <button type="button" class="btn btn-primary" ng-click="mode='grid'" title="Show Grid">
+                    <span class="glyphicon glyphicon-th"></span>
+                </button>
+                <button type="button" class="btn btn-primary" ng-click="mode='video'" title="Show Preview">
+                    <span class="glyphicon glyphicon-facetime-video"></span>
+                </button>
+                <button type="button" ng-attr-class="{{autoPlay && 'btn btn-info' || 'btn btn-primary'}}"
+                        ng-click="togglePlay()" title="Auto-play">
+                    <span class="glyphicon glyphicon-forward"></span>
+                </button>
+                <span class="input-group-addon">FPS {{project.fps}}</span>
+                <span class="input-group-btn"><a class="btn btn-primary" ng-click="incrFps()"><span class="glyphicon glyphicon-plus"/></a></span>
+                <span class="input-group-btn"><a class="btn btn-primary" ng-click="decrFps()"><span class="glyphicon glyphicon-minus"/></a></span>
+            </div>
         </div>
         <div class="col-md-2">
             <button type="button" class="btn btn-primary" ng-click="deleteImage()" title="Delete Frame">
@@ -33,7 +47,7 @@
 
     <div class="row">
         <div class="col-md-6 editor-panel">
-            <video id="video"></video>
+            <video id="video" ng-attr-class="{{rotated && 'rotated'}}"></video>
             <canvas ng-show="onionEnabled" id="canvas"></canvas>
         </div>
         <div id="timeline-div" class="col-md-6">

@@ -2,6 +2,7 @@ package com.akirkpatrick.mm;
 
 import com.akirkpatrick.mm.model.Account;
 import com.akirkpatrick.mm.model.Project;
+import com.akirkpatrick.mm.model.ProjectInfo;
 import com.sun.jersey.core.util.Base64;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -46,6 +47,10 @@ public class MovieMakerService {
 
     @Transactional(readOnly=true)
     public Project getProject(Account account, Long projectId) {
+        return safeGetProject(account, projectId);
+    }
+
+    private Project safeGetProject(Account account, Long projectId) {
         Project project = em.find(Project.class, projectId);
         if ( project == null ) {
             throw new IllegalArgumentException("Project not found with id: "+projectId);
@@ -54,6 +59,12 @@ public class MovieMakerService {
             throw new IllegalArgumentException("Attempting to access a project not owned by account!");
         }
         return project;
+    }
+
+    @Transactional
+    public void deleteProject(Account account, Long projectId) {
+        Project project = safeGetProject(account, projectId);
+        deleteProject(project);
     }
 
     @Transactional
@@ -89,6 +100,14 @@ public class MovieMakerService {
         return project;
     }
 
+    @Transactional
+    public Project updateProjectInfo(ProjectInfo projectInfo) {
+        Project project = em.find(Project.class, projectInfo.getId());
+        project.setName(projectInfo.getName());
+        project.setFps(projectInfo.getFps());
+        return project;
+    }
+
     @Transactional(readOnly=true)
     public boolean isAccount(String username) {
         return em.createNamedQuery("Account.findByUsername")
@@ -106,6 +125,7 @@ public class MovieMakerService {
     public void cleanup() {
         // find projects that haven't been modified for more than 24 hrs
         Calendar calendar=Calendar.getInstance();
+        // TODO: H: modify age before re-enabling cleanup!
         calendar.roll(Calendar.MINUTE, false);
 
         System.out.println("cleaning up expired projects...");
@@ -115,16 +135,21 @@ public class MovieMakerService {
                 .getResultList();
 
         for ( Project p : list ) {
-            System.out.println("deleting project: "+p.getAccount().getUsername()+":"+p.getName());
-            // delete all the frames
-            List<String> frames = p.getFrames();
-            for ( String f : frames ) {
-                System.out.println("+ deleting frame: "+f);
-                FileHelper.delete(f);
-            }
-            // delete the project
-            em.remove(p);
+            deleteProject(p);
         }
         System.out.println("cleanup done");
     }
+
+    private void deleteProject(Project p) {
+        System.out.println("deleting project: "+p.getAccount().getUsername()+":"+p.getName());
+        // delete all the frames
+        List<String> frames = p.getFrames();
+        for ( String f : frames ) {
+            System.out.println("+ deleting frame: "+f);
+            FileHelper.delete(f);
+        }
+        // delete the project
+        em.remove(p);
+    }
+
 }

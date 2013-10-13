@@ -6,17 +6,42 @@
                 <h3 class="panel-title">Projects</h3>
             </div>
             <div class="panel-body">
-                <div class="alert alert-info" ng-show="projects.length == 0">You do not have any projects yet. Create a new one below.</div>
+                <div class="alert alert-info" ng-show="projects.length == 0">You do not have any projects yet. Create a
+                    new one below.
+                </div>
                 <div class="alert alert-info" ng-show="projects == undefined">Loading projects...</div>
-                <ul>
-                    <li ng-repeat='project in projects'>
-                        <a ng-href="#/project/{{project.id}}">{{project.name}}</a> (modified {{moment(project.lastModified)}})
-                    </li>
-                </ul>
+                <table class="projects table table-bordered table-striped table-condensed">
+                    <thead>
+                    <tr>
+                        <td>Project Name</td>
+                        <td>Last Modified</td>
+                        <td>Actions</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat='project in projects'>
+                        <td><a ng-href="#/project/{{project.id}}">{{project.name}}</a></td>
+                        <td>{{moment(project.lastModified)}}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a class="btn btn-primary" ng-href="#/project/{{project.id}}">Edit</a>
+                                <button type="button" class="btn btn-primary dropdown-toggle"
+                                        data-toggle="dropdown"><span class="caret"></span></button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a ng-href="/rest/mm/download/{{project.id}}">Download Movie</a></li>
+                                    <li><a ng-click="delete(project.id)">Delete Project</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
             </div>
             <div class="panel-footer">
-                <div class="input-group"  style="width: 30%">
+                <div class="input-group" style="width: 30%">
                     <input type="text" class="form-control" ng-model="newProjectName">
+
                     <div class="input-group-btn btn-group">
                         <button class="btn btn-default" ng-click="createProject()">Add Project</button>
                     </div>

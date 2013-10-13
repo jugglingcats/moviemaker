@@ -3,6 +3,7 @@ package com.akirkpatrick.mm;
 import com.akirkpatrick.mm.generator.MovieGenerator;
 import com.akirkpatrick.mm.model.Account;
 import com.akirkpatrick.mm.model.Project;
+import com.akirkpatrick.mm.model.ProjectInfo;
 import com.akirkpatrick.mm.rest.User;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -43,6 +45,14 @@ public class MovieMakerResource {
         return "true";
     }
 
+    @DELETE
+    @Path("/project/{projectId}")
+    @Consumes({MediaType.TEXT_PLAIN, MediaType.APPLICATION_XML})
+    public String deleteProject(@User Account account, @PathParam("projectId") Long projectId) {
+        service.deleteProject(account, projectId);
+        return "true";
+    }
+
     @GET
     @Path("/image/{id}")
     public StreamingOutput getImage(@PathParam("id") final String id) {
@@ -57,12 +67,15 @@ public class MovieMakerResource {
     @GET
     @Path("/download/{projectId}")
     @Produces("video/quicktime")
-    public StreamingOutput getMovie(@User Account account, @PathParam("projectId") Long projectId) {
+    public StreamingOutput getMovie(@User Account account, @PathParam("projectId") Long projectId,
+                                    @Context HttpServletResponse response) {
+
         final Project project=service.getProject(account, projectId);
+        response.addHeader("Content-Disposition", "attachment; filename=\""+ project.getName() +"\"");
         return new StreamingOutput() {
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
-                new MovieGenerator().create(FileHelper.toPaths(project.getFrames()), output);
+                new MovieGenerator().create(FileHelper.toPaths(project.getFrames()), project.getFps(), output);
             }
         };
     }
@@ -98,23 +111,22 @@ public class MovieMakerResource {
         return service.findProject(projectId);
     }
 
+    @POST
+    @Path("/project")
+    @Produces({"text/json", "text/xml"})
+    @Consumes({"application/json", "text/json", "text/xml"})
+    public Project projectCreateOrUpdate(@User Account account, ProjectInfo projectInfo) {
+        if ( projectInfo.getId() != null ) {
+            return service.updateProjectInfo(projectInfo);
+        }
+        return service.addProject(account, projectInfo.getName());
+    }
 
     @GET
     @Path("/project/list")
     @Produces({"text/json", "text/xml"})
     public List<Project> project(@User Account account) {
         return account.getProjects();
-    }
-
-    @POST
-    @Path("/project")
-    @Produces({"text/json", "text/xml"})
-    @Consumes({"application/json", "text/json", "text/xml"})
-    public Project projectCreateOrUpdate(@User Account account, Project project) {
-        if ( project.getId() != null ) {
-            throw new IllegalArgumentException("Update of project not allowed yet!");
-        }
-        return service.addProject(account, project.getName());
     }
 
     @GET

@@ -20,6 +20,6 @@ public class MovieTests {
         List<String> files=new ArrayList<String>();
         files.add("tmp/107bed06-2595-472a-8edf-f871fdd8e912.jpg");
         files.add("tmp/x612cfb7a-0a72-4363-a988-0661e2fd1f13.jpg");
-        new MovieGenerator().create(files, null);
+        new MovieGenerator().create(files, 10, null);
     }
 }

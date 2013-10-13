@@ -4,7 +4,7 @@
     MM.controller('MovieMakerCtrl', function ($scope, $http, $routeParams, $resource) {
         var Project = $resource('rest/mm/project/:projectId', { projectId: '@projectId' });
 
-        $scope.previewImage=0;
+        $scope.previewImage = 0;
 
         $scope.projectId = $routeParams.projectId;
         if ($scope.projectId == undefined) {
@@ -19,8 +19,11 @@
 
         var index = 0;
         var interval = 200;
+        var timerId;
+
         $scope.mode = 'grid';
         $scope.onionEnabled = true;
+        $scope.rotated = true;
 
         $scope.project = Project.get({projectId: $scope.projectId});
 //        var snaps = $scope.project.frames || [];
@@ -70,10 +73,59 @@
             $scope.onionEnabled = !$scope.onionEnabled;
         }
 
+        $scope.toggleRotate = function () {
+            $scope.rotated = !$scope.rotated;
+        }
+
+        $scope.togglePlay = function () {
+            $scope.autoPlay = !$scope.autoPlay;
+        }
+
+        $scope.incrFps = function () {
+            if ($scope.project) {
+                $scope.project.fps++;
+                $scope.project.$save();
+            }
+        }
+
+        $scope.decrFps = function () {
+            if ($scope.project && $scope.project.fps > 1) {
+                $scope.project.fps--;
+                $scope.project.$save();
+            }
+        }
+
+        $scope.$watch('project.fps', function (newval) {
+            console.log("fps changed: " + newval);
+            if (!newval) {
+                return;
+            }
+            if (timerId) {
+                clearInterval(timerId);
+            }
+            timerId = setInterval(function () {
+                if ($scope.autoPlay) {
+                    $scope.previewImage++;
+                    if ($scope.previewImage >= $scope.project.frames.length) {
+                        $scope.previewImage = 0;
+                    }
+                    $scope.$apply();
+                }
+            }, 1000 / newval);
+        })
+
         $scope.snap = function () {
+            // TODO: C: add option to not rotate canvas
             canvas.width = width;
             canvas.height = height;
-            canvas.getContext('2d').drawImage(video, 0, 0, width, height);
+            var context = canvas.getContext('2d');
+            if ($scope.rotated) {
+                context.translate(width / 2, height / 2);
+                context.rotate(Math.PI);
+                context.drawImage(video, -width / 2, -height / 2, width, height);
+            } else {
+                context.drawImage(video, 0, 0, width, height);
+            }
             var data = canvas.toDataURL('image/jpeg');
             post(data);
 //            photo.setAttribute('src', data);
@@ -150,6 +202,12 @@
             project.$save(function () {
                 refreshProjects();
             });
+        };
+
+        $scope.delete = function(projectId) {
+            if ( $window.confirm("Are you sure you want to delete this project?") ) {
+                Project.delete({projectId: projectId}, function() { refreshProjects(); });
+            }
         }
     });
 
