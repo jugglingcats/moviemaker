@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.akirkpatrick</groupId>
-    <artifactId>classifieds</artifactId>
+    <artifactId>movie-maker</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>classifieds Jersey Webapp</name>
@@ -191,7 +191,7 @@
     </dependencies>
 
     <build>
-        <finalName>classifieds</finalName>
+        <finalName>movie-maker</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
