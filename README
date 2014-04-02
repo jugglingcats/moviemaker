@@ -1,29 +1,56 @@
-Stories
+An in-browser stop-frame animation package
 
-- Create video
+Started because my son is into stop-frame animation and there actually isn't a lot
+of simple software out there. We were using toonloop on Linux and I was curious how far
+one could get using built-in browser features, specifically the webcam support. It was
+also an angularjs learning project.
+
+I was pleased with the result:
+- Very usable to create simple stop-frame animations
+- Tile and preview mode
+- Onion skinning
+- Adjust frames per second (fps)
+- Delete frames
+- Export to MOV file
+- Persist project to server
+- No plugins required
+
+Note: only tested in Chrome
+
+Vague plan is to host it somewhere and allow anyone to register to create animations, and
+keep for 24hrs to keep storage requirements low.
+
+Original ideas / stories
+
+- Create video (all done)
   * Add frame
   * Upload frame
-  - Preview --> View video
   
-- View video
+- View preview (done)
 
-* Generate video
+- Adjust FPS (done)
 
-- Register
+- Flip vertically (in case camera is inverted - done)
 
-* Download video (user can then share elsewhere)
+- Onion skinning (done)
 
-- List my videos
+- Generate video (done - to MOV format)
 
-- Delete video
+- Register (half done - no password validation)
 
-- Upload to YouTube
+- Download video (user can then share elsewhere - done)
 
-- Upload to Google Drive
+- List my videos (done)
 
-- Upload to Dropbox
+- Delete video (done)
 
-- Upload to outlook.com
+- Upload to YouTube (not done)
+
+- Upload to Google Drive (not done)
+
+- Upload to Dropbox (not done)
+
+- Upload to outlook.com (not done)
 
 Interesting glyph icons
 - camera
