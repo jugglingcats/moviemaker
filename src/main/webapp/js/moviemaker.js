@@ -156,7 +156,7 @@
             }
             var base64data = data.substr(header.length + 1);
 
-            $http.post('/rest/mm/post/' + $scope.projectId, base64data, {
+            $http.post('rest/mm/post/' + $scope.projectId, base64data, {
                 headers: { 'Content-Type': "text/plain" },
                 transformRequest: angular.identity
             }).success(function (result) {
