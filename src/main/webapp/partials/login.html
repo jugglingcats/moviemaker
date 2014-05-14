@@ -1,27 +1,41 @@
-<div class="modal fade">
+<div class="modal fade" data-backdrop="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Sign in to Movie Maker</h4>
             </div>
-            <form ng-submit="submit()">
+            <form name="login_register" ng-submit="validate()">
                 <div class="modal-body">
-                    <!--<div class="alert alert-danger">-->
-                        <!--<a class="close" data-dismiss="alert" href="#">x</a>Incorrect Username or Password!-->
-                    <!--</div>-->
-                    <div class="btn-block">
-                        <input class="col-lg-span3 form-control" placeholder="Username" type="text" name="username" ng-model="username">
+                    <div ng-show="form.error" class="alert alert-danger">
+                        {{form.error}}. <a href="" ng-click="form.help=true;form.error=false">Forgotten your username or password?</a>
+                    </div>
+                    <div ng-show="form.help" class="alert alert-info">
+                        We don't collect user's email addresses and have no way to send emails, so unfortunately we can't reset your password.
+                        You will have to create a new MovieMaker account and start again. Apologies!
+                    </div>
+                    <div ng-show="form.registerSuccess" class="alert alert-success">
+                        Registration successful. Hold on while we log you in...
                     </div>
                     <div class="btn-block">
-                        <input class="col-lg-span3 form-control" placeholder="Password" type="password" ng-model="password">
+                        <input class="col-lg-span3 form-control" required placeholder="Username" type="text" name="username" ng-model="form.username">
                     </div>
-                    <!--<label class="checkbox">-->
-                        <!--<input type="checkbox" name="remember" value="1"> Remember Me-->
-                    <!--</label>-->
+                    <div class="btn-block">
+                        <input class="col-lg-span3 form-control" required placeholder="Password" type="password" ng-model="form.password">
+                    </div>
+                    <div class="btn-block" ng-show="form.registerMode">
+                        <input class="col-lg-span3 form-control" ng-required="form.registerMode" placeholder="Re-type Password" type="password" ng-model="form.passwordConfirm">
+                        <strong ng-show="form.passwordMismatch">Passwords do not match!</strong>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button class="btn-primary btn" type="submit">Login</button>
+                    <div ng-hide="form.registerMode" style="text-align: left">
+                        <button class="btn-success btn" type="submit" ng-click="submit()">Login</button>
+                        <a class="btn-info btn pull-right" ng-click="register()">New Account...</a>
+                    </div>
+                    <div ng-show="form.registerMode">
+                        <a class="btn-info btn" ng-click="form.registerMode=false">Cancel</a>
+                        <button class="btn-success btn" type="submit" ng-click="registerNow()">Register</a>
+                    </div>
                 </div>
             </form>
         </div>

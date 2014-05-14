@@ -1,5 +1,5 @@
 <div class="navbar navbar-default">
-    <div class="container">
+    <div class="container navbar-container">
         <div class="navbar-header">
             <a href="../" class="navbar-brand">Movie Maker</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
@@ -16,8 +16,9 @@
                 <li class="dropdown" ng-show="accountService.account.username != undefined">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Logged in: {{accountService.account.username}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" aria-labelledby="themes">
+                        <li><a tabindex="-1" ng-href="#/projects">Projects</a></li>
+                        <li class="divider"></li>
                         <li><a tabindex="-1" href="#" ng-click="logout()">Logout</a></li>
-                        <!--<li class="divider"></li>-->
                     </ul>
                 </li>
                 <li ></li>

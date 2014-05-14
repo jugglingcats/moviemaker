@@ -2,11 +2,6 @@ html, body {
     background: #111111;
 }
 
-#timeline-div {
-    max-height: 500px;
-    overflow-y: auto;
-}
-
 /*#timeline li {*/
     /*display: inline;*/
     /*padding: 0px 0px 0px 0px;*/
@@ -17,7 +12,34 @@ html, body {
 /*}*/
 
 .editor-panel {
-    position: relative;
+    padding-top: 3px;
+    width: 670px;
+}
+
+.editor-toolbar {
+    float: left;
+    padding-left: 15px;
+    width: 655px;
+}
+
+.timeline-toolbar {
+    float: left;
+    padding-left: 15px;
+}
+
+.timeline-div {
+    max-height: 500px;
+    min-width: 700px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.timeline-scrubber {
+    max-height: 500px;
+    min-width: 640px;
+    width: 640px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #video {
@@ -37,7 +59,7 @@ table.projects td {
 #canvas {
     position: absolute;
     left: 15px;
-    top: 0px;
+    top: 3px;
     opacity: 0.5;
     /*display: none;*/
 }
@@ -55,11 +77,50 @@ table.projects td {
     zoom: 0.20;
 }
 
-.editor-container {
-    max-width: 3000px;
+.container {
+    margin: 0 auto;
+    max-width: 100%;
 }
 
 .scrubber {
     width: 100%;
     display: block;
+}
+
+.btn-question {
+    font-size: 1.8em;
+    color: #c0c0c0;
+}
+
+.info-panel {
+    width: 640px;
+    height: 480px;
+
+    padding: 20px 20px 20px 20px;
+
+    /* Internet Explorer 10 */
+    display:-ms-flexbox;
+    -ms-flex-pack:center;
+    -ms-flex-align:center;
+
+    /* Firefox */
+    display:-moz-box;
+    -moz-box-pack:center;
+    -moz-box-align:center;
+
+    /* Safari, Opera, and Chrome */
+    display:-webkit-box;
+    -webkit-box-pack:center;
+    -webkit-box-align:center;
+
+    /* W3C */
+    display:box;
+    box-pack:center;
+    box-align:center;
+}
+
+.info-text {
+    background-color: rgba(0,0,0,0.7);
+    margin: 10px 30px 10px 30px;
+    padding: 20px 20px 20px 20px;
 }

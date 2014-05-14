@@ -6,18 +6,21 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@NamedQuery(name="Account.findByUsername", query="select a from Account a where a.username=:username")
+@NamedQueries({
+        @NamedQuery(name = "Account.findByUsername", query = "select a from Account a where a.username=:username"),
+        @NamedQuery(name = "Account.findByUsernameAndPassword", query = "select a from Account a where a.username=:username and a.md5Password=:password")
+})
 @Entity
 public class Account {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String username;
     private String md5Password;
 
-    @OneToMany(mappedBy="account")
-    private List<Project> projects=new ArrayList<Project>();
+    @OneToMany(mappedBy = "account")
+    private List<Project> projects = new ArrayList<Project>();
 
     public void setUsername(String username) {
         this.username = username;

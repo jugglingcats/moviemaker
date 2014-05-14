@@ -1,4 +1,4 @@
-package com.akirkpatrick.mm;
+package com.akirkpatrick.mm.exception;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;

@@ -1,7 +1,7 @@
 (function () {
     var MM = angular.module('moviemaker', ['login-ui', 'ngResource']);
 
-    MM.controller('MovieMakerCtrl', function ($scope, $http, $routeParams, $resource) {
+    MM.controller('MovieMakerCtrl', function ($scope, $http, $routeParams, $resource, $timeout) {
         var Project = $resource('rest/mm/project/:projectId', { projectId: '@projectId' });
 
         $scope.previewImage = 0;
@@ -23,20 +23,16 @@
 
         $scope.mode = 'grid';
         $scope.onionEnabled = true;
-        $scope.rotated = true;
+        $scope.rotated = false;
 
         $scope.project = Project.get({projectId: $scope.projectId});
-//        var snaps = $scope.project.frames || [];
         console.log($scope.project);
 
-        navigator.getMedia = ( navigator.getUserMedia ||
-            navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia ||
-            navigator.msGetUserMedia);
+        navigator.getMedia = ( navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia );
 
-//        preview.addEvent("error", function() {
-//            $scope.errorMessage="There was a video error";
-//        });
+        if ( !navigator.getMedia ) {
+            throw "Failed to get media!";
+        }
 
         navigator.getMedia(
             {
@@ -66,6 +62,9 @@
                 canvas.setAttribute('width', width);
                 canvas.setAttribute('height', height);
                 streaming = true;
+                $timeout(function() {
+                    $scope.webcamEnabled = true;
+                }, 50);
             }
         }, false);
 
@@ -115,7 +114,6 @@
         })
 
         $scope.snap = function () {
-            // TODO: C: add option to not rotate canvas
             canvas.width = width;
             canvas.height = height;
             var context = canvas.getContext('2d');
@@ -128,7 +126,6 @@
             }
             var data = canvas.toDataURL('image/jpeg');
             post(data);
-//            photo.setAttribute('src', data);
         }
 
         $scope.keydown = function ($event) {
@@ -163,14 +160,12 @@
                 headers: { 'Content-Type': "text/plain" },
                 transformRequest: angular.identity
             }).success(function (result) {
-                    console.log("posted! " + result);
-                    $scope.project.frames.push(result);
-//                    $scope.uploadedImgSrc = result.src;
-//                    $scope.sizeInBytes = result.size;
-                }).error(function (result) {
-                    console.log("error with post!");
-                    $scope.errorMessage = result;
-                });
+                console.log("posted! " + result);
+                $scope.project.frames.push(result);
+            }).error(function (result) {
+                console.log("error with post!");
+                $scope.errorMessage = result;
+            });
 
         };
     });
@@ -204,17 +199,16 @@
             });
         };
 
-        $scope.delete = function(projectId) {
-            if ( $window.confirm("Are you sure you want to delete this project?") ) {
-                Project.delete({projectId: projectId}, function() { refreshProjects(); });
+        $scope.delete = function (projectId) {
+            if ($window.confirm("Are you sure you want to delete this project?")) {
+                Project.delete({projectId: projectId}, function () {
+                    refreshProjects();
+                });
             }
         }
     });
 
     MM.controller('WelcomeCtrl', function ($scope) {
-        $scope.doit = function () {
-            alert("done");
-        }
     });
 
     MM.config(['$routeProvider', function ($routeProvider) {

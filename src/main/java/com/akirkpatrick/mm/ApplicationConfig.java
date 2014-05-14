@@ -17,7 +17,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
-//@EnableJpaRepositories(basePackages = {"com.satesh.springjsfjpa.repo"})
 @EnableTransactionManagement
 public class ApplicationConfig {
 
@@ -27,9 +26,6 @@ public class ApplicationConfig {
         dataSource.setDriverClass(org.h2.Driver.class);
         dataSource.setUrl("jdbc:h2:mm");
         return dataSource;
-
-//        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2)
-//                .build();
     }
 
     @Bean
@@ -42,6 +38,7 @@ public class ApplicationConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(Boolean.TRUE);
+        vendorAdapter.setDatabasePlatform("org.hibernate.dialect.H2Dialect");
         vendorAdapter.setShowSql(Boolean.TRUE);
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
@@ -49,8 +46,6 @@ public class ApplicationConfig {
         factory.setDataSource(dataSource());
         factory.afterPropertiesSet();
         factory.setLoadTimeWeaver(new InstrumentationLoadTimeWeaver());
-        //return factory.getObject();
-        //Changed as per Josh's suggestion
         return factory;
     }
 

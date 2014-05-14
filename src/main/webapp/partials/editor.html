@@ -1,7 +1,7 @@
 <div class="container editor-container">
     <div class="row">
-        <div class="col-md-6">
-            <button type="button" class="btn btn-primary" ng-click="snap()" title="Take Picture">
+        <div class="editor-toolbar">
+            <button type="button" class="btn btn-primary" ng-click="snap()" title="Take Picture (Spacebar)">
                 <span class="glyphicon glyphicon-camera"></span>
             </button>
             <button type="button" class="btn btn-primary" ng-show="onionEnabled" ng-click="toggleOnion()"
@@ -20,37 +20,102 @@
             <a class="btn btn-primary" ng-href="/rest/mm/download/{{projectId}}" title="Download Video">
                 <span class="glyphicon glyphicon-download"></span>
             </a>
+            <a class="pull-right btn-question" ng-click="helpMode=true" title="Show Help">
+                <span class="glyphicon glyphicon-question-sign"></span>
+            </a>
         </div>
-        <div class="col-md-4">
-            <div class="input-group">
-                <button type="button" class="btn btn-primary" ng-click="mode='grid'" title="Show Grid">
-                    <span class="glyphicon glyphicon-th"></span>
-                </button>
-                <button type="button" class="btn btn-primary" ng-click="mode='video'" title="Show Preview">
-                    <span class="glyphicon glyphicon-facetime-video"></span>
-                </button>
-                <button type="button" ng-attr-class="{{autoPlay && 'btn btn-info' || 'btn btn-primary'}}"
-                        ng-click="togglePlay()" title="Auto-play">
-                    <span class="glyphicon glyphicon-forward"></span>
-                </button>
+        <div class="timeline-toolbar">
+            <div class="input-group" style="width: 1px; float: right; margin-left: 30px">
                 <span class="input-group-addon">FPS {{project.fps}}</span>
-                <span class="input-group-btn"><a class="btn btn-primary" ng-click="incrFps()"><span class="glyphicon glyphicon-plus"/></a></span>
-                <span class="input-group-btn"><a class="btn btn-primary" ng-click="decrFps()"><span class="glyphicon glyphicon-minus"/></a></span>
+                <span class="input-group-btn"><a class="btn btn-primary" ng-click="incrFps()"><span
+                        class="glyphicon glyphicon-plus"></span></a></span>
+                <span class="input-group-btn"><a class="btn btn-primary" ng-click="decrFps()"><span
+                        class="glyphicon glyphicon-minus"></span></a></span>
+                <button type="button" class="btn btn-primary" ng-click="deleteImage()" title="Delete Frame">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
             </div>
-        </div>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-primary" ng-click="deleteImage()" title="Delete Frame">
-                <span class="glyphicon glyphicon-trash"></span>
+            <button type="button" class="btn btn-primary" ng-click="mode='grid'" title="Show Grid">
+                <span class="glyphicon glyphicon-th"></span>
+            </button>
+            <button type="button" class="btn btn-primary" ng-click="mode='video'" title="Show Preview">
+                <span class="glyphicon glyphicon-facetime-video"></span>
+            </button>
+            <button type="button" ng-attr-class="{{autoPlay && 'btn btn-info' || 'btn btn-primary'}}"
+                    ng-click="togglePlay()" title="Auto-play">
+                <span class="glyphicon glyphicon-forward"></span>
             </button>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-6 editor-panel">
-            <video id="video" ng-attr-class="{{rotated && 'rotated'}}"></video>
-            <canvas ng-show="onionEnabled" id="canvas"></canvas>
+            <video ng-show="webcamEnabled && !helpMode" id="video" ng-attr-class="{{rotated && 'rotated'}}"></video>
+            <canvas ng-show="webcamEnabled && onionEnabled && !helpMode" id="canvas"></canvas>
+            <div ng-hide="webcamEnabled || helpMode" class="panel info-panel"
+                 style="background-image: url('images/noise.png')">
+                <div class="info-text">
+                    <div class="row">
+                        <div class="col-md-4" style="text-align: center">
+                            <span style="font-size: 6em" class="glyphicon glyphicon-facetime-video"></span>
+                        </div>
+                        <div class="col-md-8">
+                            <p>
+                                A live webcam image should appear here once enabled.
+                                Please allow this page to use the webcam (or camera).
+                            </p>
+
+                            <p>
+                                If the picture does not appear, it may be that your webcam is not configured properly.
+                                Please test in another programme such as Skype and try again.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-show="helpMode" class="panel info-panel" style="background-image: url('images/noise.png')">
+                <div class="info-text">
+                    <p>Click the <span class="glyphicon glyphicon-camera"></span> button to add frames to your
+                        animation. Keep adding frames to build up the animation.
+                    </p>
+
+                    <p>
+                        The <span class="glyphicon glyphicon-eye-close"></span> onion skinning feature shows the
+                        previous on top of the next frame to help you line things up.
+                    </p>
+
+                    <p>
+                        If you are shooting top-down, it can be useful to <span
+                            class="glyphicon glyphicon-refresh"></span> rotate the display by 180 degrees.
+                    </p>
+
+                    <p>
+                        When you're done, <span class="glyphicon glyphicon-download"></span> download your video to MOV
+                        format.
+                    </p>
+
+                    <p>
+                        Frames you've added can be shown in <span class="glyphicon glyphicon-th"></span> thumbnail or
+                        <span class="glyphicon glyphicon-facetime-video"></span> preview mode.
+                        In preview mode you can <span class="glyphicon glyphicon-forward"></span> auto-play the video.
+                    </p>
+
+                    <p>
+                        You can <span class="glyphicon glyphicon-plus"></span> increase or <span
+                            class="glyphicon glyphicon-minus"></span> decrease the frames-per-second (FPS) to adjust the
+                        speed of playback.
+                    </p>
+
+                    <p>
+                        Finally, if you add a frame by mistake, you can select and <span
+                            class="glyphicon glyphicon-trash"></span> delete it.
+                    </p>
+
+                    <p><a href="" ng-click="helpMode=false" class="btn btn-default">Got it!</a></p>
+                </div>
+            </div>
         </div>
-        <div id="timeline-div" class="col-md-6">
+        <div class="timeline-div">
             <div id="timeline">
                 <div ng-repeat="snap in project.frames">
                     <div class="thumb-container" tabindex="0"
@@ -64,9 +129,9 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 editor-panel">
         </div>
-        <div class="col-md-6" ng-show="mode == 'video'">
+        <div class="timeline-scrubber" ng-show="mode == 'video'">
             <input type="range" ng-model="previewImage" value="0" min="0" max="{{project.frames.length-1}}" step="1"
                    class="ng-valid ng-dirty scrubber">
         </div>

@@ -1,5 +1,8 @@
 package com.akirkpatrick.mm;
 
+import com.akirkpatrick.mm.exception.InvalidUsernameOrPasswordException;
+import com.akirkpatrick.mm.exception.MovieMakerException;
+import com.akirkpatrick.mm.exception.UserExistsException;
 import com.akirkpatrick.mm.generator.MovieGenerator;
 import com.akirkpatrick.mm.model.Account;
 import com.akirkpatrick.mm.model.Project;
@@ -84,14 +87,27 @@ public class MovieMakerResource {
     @Path("/login")
     @Consumes("application/x-www-form-urlencoded")
     @Produces({"text/json", "text/xml"})
-    public Account login(@FormParam("username") String username, @FormParam("password") String password,
-                      @Context HttpServletRequest request) {
+    public Account login(@FormParam("username") String username, @FormParam("password") String password, @Context HttpServletRequest request) {
         Account account;
         try {
             account=service.authenticate(username, password);
         } catch (NoResultException e) {
-            account=service.createAccount(username, password);
+            throw new InvalidUsernameOrPasswordException();
         }
+
+        request.getSession().setAttribute("mm.account", account.getId());
+        return account;
+    }
+
+    @POST
+    @Path("/register")
+    @Consumes("application/x-www-form-urlencoded")
+    @Produces({"text/json", "text/xml"})
+    public Account register(@FormParam("username") String username, @FormParam("password") String password, @Context HttpServletRequest request) {
+        if ( service.findAccount(username) != null ) {
+            throw new UserExistsException();
+        }
+        Account account=service.createAccount(username, password);
 
         request.getSession().setAttribute("mm.account", account.getId());
         return account;

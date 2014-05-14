@@ -10,7 +10,7 @@
                     new one below.
                 </div>
                 <div class="alert alert-info" ng-show="projects == undefined">Loading projects...</div>
-                <table class="projects table table-bordered table-striped table-condensed">
+                <table ng-show="projects.length > 0" class="projects table table-bordered table-striped table-condensed">
                     <thead>
                     <tr>
                         <td>Project Name</td>
