@@ -230,7 +230,7 @@
             replace: true,
             scope: { },
             templateUrl: 'partials/navbar.html',
-            controller: function ($scope, $http, $resource, accountService) {
+            controller: function ($scope, $http, $resource, $location, accountService) {
                 var Account = $resource('rest/mm/account');
 
                 // init the account (if logged in)
@@ -244,7 +244,7 @@
                 $scope.logout = function () {
                     $http.post('rest/mm/logout').success(function (result) {
                         accountService.account = undefined;
-                        $window.location.reload();
+                        $location.path("/welcome");
                     });
                 };
 
