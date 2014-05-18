@@ -157,7 +157,7 @@
             var base64data = data.substr(header.length + 1);
 
             var frameNum = $scope.project.frames.length;
-            $scope.project.frames[frameNum]='processing';
+            $scope.project.frames.push('processing');
 
             $http.post('rest/mm/post/' + $scope.projectId + "/" + frameNum, base64data, {
                 headers: { 'Content-Type': "text/plain" },
