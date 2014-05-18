@@ -118,11 +118,12 @@
         <div class="timeline-div">
             <div id="timeline">
                 <div ng-repeat="snap in project.frames">
-                    <div class="thumb-container" tabindex="0"
-                         ng-show="mode == 'grid' || previewImage == $index"
-                         mm-focus="select($index)">
+                    <div class="thumb-container" tabindex="0" ng-show="mode == 'grid' || previewImage == $index" mm-focus="select($index)">
 
-                        <img ng-attr-class="{{mode=='grid' && 'thumb-img'}}" ng-src="rest/mm/image/{{snap}}"/>
+                        <img ng-show="snap != 'processing'" ng-attr-class="{{mode=='grid' && 'thumb-img'}}" ng-src="rest/mm/image/{{snap}}"/>
+                        <div ng-hide="snap != 'processing'" ng-attr-class="{{mode=='grid' && 'thumb-img'}}" style="width: 640px; height: 480px; position: relative; background: #202020">
+                            <span us-spinner="{radius: 50, length: 50, width: 20, color: '#a0a0a0'}"></span>
+                        </div>
                     </div>
                 </div>
             </div>

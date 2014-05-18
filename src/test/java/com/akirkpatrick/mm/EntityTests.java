@@ -60,7 +60,7 @@ public class EntityTests extends Assert {
         Account a=mms.createAccount("alfie", "password");
         Project p=mms.addProject(a, "test1");
         a.addProject(p);
-        p.addFrame("x");
+        p.addFrame("x", 0);
 
         em.flush();
 

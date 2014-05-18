@@ -4,8 +4,6 @@ import com.akirkpatrick.mm.model.Account;
 import com.akirkpatrick.mm.model.Project;
 import com.akirkpatrick.mm.model.ProjectInfo;
 import com.sun.jersey.core.util.Base64;
-import org.hibernate.annotations.common.util.impl.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -53,7 +51,7 @@ public class MovieMakerService {
     }
 
     @Transactional
-    public String store(String base64data, Account account, Long projectId) {
+    public String store(String base64data, Account account, Long projectId, Integer frameNum) {
         UUID uuid = UUID.randomUUID();
         byte[] bytes = Base64.decode(base64data);
         try {
@@ -68,7 +66,7 @@ public class MovieMakerService {
             throw new RuntimeException(e);
         }
         Project project = getProject(account, projectId);
-        project.addFrame(uuid.toString());
+        project.addFrame(uuid.toString(), frameNum);
 
         return uuid.toString();
     }
@@ -83,10 +81,10 @@ public class MovieMakerService {
         if (project == null) {
             throw new IllegalArgumentException("Project not found with id: " + projectId);
         }
-        if (!account.getId().equals(project.getAccount().getId())) {
-            throw new IllegalArgumentException("Attempting to access a project not owned by account!");
+        if ("admin".equals(account.getUsername()) || account.getId().equals(project.getAccount().getId())) {
+            return project;
         }
-        return project;
+        throw new IllegalArgumentException("Attempting to access a project not owned by account!");
     }
 
     @Transactional
@@ -164,11 +162,6 @@ public class MovieMakerService {
         return em.createNamedQuery("Account.findByUsername")
                 .setParameter("username", username)
                 .getResultList().size() == 1;
-    }
-
-    @Transactional(readOnly = true)
-    public Project findProject(Long projectId) {
-        return em.find(Project.class, projectId);
     }
 
     //    @Scheduled(fixedDelay=10000000)

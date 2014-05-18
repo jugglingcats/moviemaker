@@ -9,6 +9,7 @@ import com.akirkpatrick.mm.model.Project;
 import com.akirkpatrick.mm.model.ProjectInfo;
 import com.akirkpatrick.mm.rest.User;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,11 +31,12 @@ public class MovieMakerResource {
     private MovieMakerService service;
 
     @POST
-    @Path("/post/{projectId}")
+    @Path("/post/{projectId}/{frameNum}")
     @Consumes(MediaType.TEXT_PLAIN)
-    public String addImageToProject(@User Account account, @PathParam("projectId") Long projectId, String base64data) {
+    public StoredFrameInfo addImageToProject(@User Account account, @PathParam("projectId") Long projectId, @PathParam("frameNum") Integer frameNum, String base64data) {
         try {
-            return service.store(base64data, account, projectId);
+            String uuid = service.store(base64data, account, projectId, frameNum);
+            return new StoredFrameInfo(uuid, frameNum);
         } catch (Exception e) {
             throw new MovieMakerException(e);
         }
@@ -124,7 +126,7 @@ public class MovieMakerResource {
     @Path("/project/{projectId}")
     @Produces({"text/json", "text/xml"})
     public Project project(@User Account account, @PathParam("projectId") Long projectId) {
-        return service.findProject(projectId);
+        return service.getProject(account, projectId);
     }
 
     @POST
@@ -175,4 +177,21 @@ public class MovieMakerResource {
         return account;
     }
 
+    public static class StoredFrameInfo {
+        private String uuid;
+        private Integer frameNum;
+
+        public StoredFrameInfo(String uuid, Integer frameNum) {
+            this.uuid = uuid;
+            this.frameNum = frameNum;
+        }
+
+        public String getUuid() {
+            return uuid;
+        }
+
+        public Integer getFrameNum() {
+            return frameNum;
+        }
+    }
 }

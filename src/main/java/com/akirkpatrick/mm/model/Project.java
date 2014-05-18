@@ -18,8 +18,12 @@ public class Project extends ProjectInfo {
     @OrderColumn
     private List<String> frames=new ArrayList<String>();
 
-    public void addFrame(String uid) {
-        frames.add(uid);
+    public void addFrame(String uid, Integer frameNum) {
+        while ( frames.size() <= frameNum ) {
+            frames.add(null);
+        }
+        frames.set(frameNum, uid);
+
         setLastModified(Calendar.getInstance());
     }
 

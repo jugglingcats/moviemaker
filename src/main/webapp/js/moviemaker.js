@@ -1,5 +1,5 @@
 (function () {
-    var MM = angular.module('moviemaker', ['login-ui', 'ngResource']);
+    var MM = angular.module('moviemaker', ['login-ui', 'ngResource', 'angularSpinner']);
 
     MM.controller('MovieMakerCtrl', function ($scope, $http, $routeParams, $resource, $timeout) {
         var Project = $resource('rest/mm/project/:projectId', { projectId: '@projectId' });
@@ -156,12 +156,15 @@
             }
             var base64data = data.substr(header.length + 1);
 
-            $http.post('rest/mm/post/' + $scope.projectId, base64data, {
+            var frameNum = $scope.project.frames.length;
+            $scope.project.frames[frameNum]='processing';
+
+            $http.post('rest/mm/post/' + $scope.projectId + "/" + frameNum, base64data, {
                 headers: { 'Content-Type': "text/plain" },
                 transformRequest: angular.identity
             }).success(function (result) {
-                console.log("posted! " + result);
-                $scope.project.frames.push(result);
+                console.log(result);
+                $scope.project.frames[result.frameNum]=result.uuid;
             }).error(function (result) {
                 console.log("error with post!");
                 $scope.errorMessage = result;
