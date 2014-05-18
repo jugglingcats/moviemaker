@@ -8,6 +8,7 @@ import java.util.List;
 
 @NamedQueries({
         @NamedQuery(name = "Account.findByUsername", query = "select a from Account a where a.username=:username"),
+        @NamedQuery(name = "Account.findAll", query = "select a from Account a"),
         @NamedQuery(name = "Account.findByUsernameAndPassword", query = "select a from Account a where a.username=:username and a.md5Password=:password")
 })
 @Entity

@@ -146,6 +146,29 @@ public class MovieMakerResource {
     }
 
     @GET
+    @Path("/project/list/{accountId}")
+    @Produces({"text/json", "text/xml"})
+    public List<Project> projectsForAccount(@User Account account, @PathParam("accountId") Long accountId) throws IllegalAccessException {
+        if ( !account.getUsername().equals("admin") ) {
+            throw new IllegalAccessException("Only admin can list user projects!");
+        }
+
+        Account other=service.findAccount(accountId);
+        return other.getProjects();
+    }
+
+    @GET
+    @Path("/account/list")
+    @Produces({"text/json", "text/xml"})
+    public List<Account> listAccounts(@User Account account) throws IllegalAccessException {
+        if ( !account.getUsername().equals("admin") ) {
+            throw new IllegalAccessException("Only admin can list users!");
+        }
+        return service.listAccounts();
+    }
+
+
+    @GET
     @Path("/account")
     @Produces({"text/json", "text/xml"})
     public Account account(@User(required = false) Account account) {

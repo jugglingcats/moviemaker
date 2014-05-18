@@ -170,6 +170,29 @@
         };
     });
 
+    MM.controller('AdminCtrl', function ($scope, $rootScope, $http, $resource) {
+        var UserList = $resource('rest/mm/account/list');
+        var ProjectList = $resource('rest/mm/project/list/:accountId', { accountId: '@accountId' });
+
+        UserList.query(function (list) {
+            $scope.users = list;
+        });
+
+        $scope.selectAccount = function(id) {
+            $scope.selectedAccount=id;
+        };
+
+        $scope.$watch("selectedAccount", function() {
+            if ( $scope.selectedAccount ) {
+                console.log("getting projects for user: "+$scope.selectedAccount)
+                ProjectList.query({accountId: $scope.selectedAccount}, function(list) {
+                    console.log("got projects!");
+                    $scope.projects=list;
+                });
+            }
+        });
+    });
+
     MM.controller('ProjectsCtrl', function ($scope, $rootScope, $http, $resource, $window, accountService) {
         var Project = $resource('rest/mm/project/:projectId', { projectId: '@projectId' });
         var ProjectList = $resource('rest/mm/project/list');
@@ -215,6 +238,7 @@
         $routeProvider
             .when('/welcome', {templateUrl: 'partials/welcome.html', controller: 'WelcomeCtrl'})
             .when('/projects', {templateUrl: 'partials/projects.html', controller: 'ProjectsCtrl'})
+            .when('/admin', {templateUrl: 'partials/admin.html', controller: 'AdminCtrl'})
             .when('/project/:projectId', {templateUrl: 'partials/editor.html', controller: 'MovieMakerCtrl'})
             .otherwise({redirectTo: '/welcome'})
     }]);

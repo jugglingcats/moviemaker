@@ -111,6 +111,11 @@ public class MovieMakerService {
     }
 
     @Transactional(readOnly = true)
+    public List<Account> listAccounts() {
+        return em.createNamedQuery("Account.findAll", Account.class).getResultList();
+    }
+
+    @Transactional(readOnly = true)
     public Account findAccount(String username) {
         Query query = em.createNamedQuery("Account.findByUsername");
         query.setParameter("username", username);
@@ -119,6 +124,11 @@ public class MovieMakerService {
             return null;
         }
         return (Account) resultList.get(0);
+    }
+
+    @Transactional(readOnly = true)
+    public Account findAccount(Long accountId) {
+        return em.find(Account.class, accountId);
     }
 
     @Transactional
@@ -192,4 +202,5 @@ public class MovieMakerService {
         // delete the project
         em.remove(p);
     }
+
 }

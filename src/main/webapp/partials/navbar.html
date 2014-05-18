@@ -13,6 +13,7 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
+                <li><a ng-show="accountService.account.username == 'admin'" ng-href="#/admin">Admin</a></li>
                 <li class="dropdown" ng-show="accountService.account.username != undefined">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="themes">Logged in: {{accountService.account.username}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" aria-labelledby="themes">
@@ -21,7 +22,7 @@
                         <li><a tabindex="-1" href="" ng-click="logout()">Logout</a></li>
                     </ul>
                 </li>
-                <li ></li>
+                <li></li>
                 <li><a href="http://builtwithbootstrap.com/" target="_blank">Built With Bootstrap</a></li>
             </ul>
 
