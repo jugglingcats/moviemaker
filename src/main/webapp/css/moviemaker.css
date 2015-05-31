@@ -2,6 +2,10 @@ html, body {
     background: #111111;
 }
 
+.jumbotron {
+    zoom: 0.75;
+}
+
 /*#timeline li {*/
     /*display: inline;*/
     /*padding: 0px 0px 0px 0px;*/
@@ -10,6 +14,10 @@ html, body {
 /*#timeline img {*/
     /*display: inline;*/
 /*}*/
+
+.editor-container, .navbar-container {
+    min-width: 100%;
+}
 
 .editor-panel {
     padding-top: 3px;
